@@ -370,15 +370,13 @@
         if (!firebaseMessaging) firebaseMessaging = firebase.messaging();
         if (!firebaseMessagingBound && firebaseMessaging && typeof firebaseMessaging.onMessage === 'function') {
           firebaseMessaging.onMessage(function(payload){
-            const title = (payload && payload.notification && payload.notification.title) || 'Petty Cash App Live';
-            const body = (payload && payload.notification && payload.notification.body) || 'New petty cash activity.';
-            try {
-              if (Notification.permission === 'granted') {
-                const note = new Notification(title, { body: body, tag: 'fcm-foreground' });
-                note.onclick = function(){ try { window.focus(); } catch(e) {} };
-              }
-            } catch (e) {}
-          });
+  try {
+    // Prevent duplicate notification
+    if (typeof renderNotifications === 'function') {
+      renderNotifications();
+    }
+  } catch (e) {}
+});
           firebaseMessagingBound = true;
         }
         return firebaseMessaging;
