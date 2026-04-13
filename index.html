@@ -1133,6 +1133,7 @@
         if(!requestDate) throw new Error('Date is required.');
         validateDateAgainstSettings(requestDate);
         if(!(amountRequested > 0)) throw new Error('Requested amount must be greater than zero.');
+        if(!remark) throw new Error('Remark is required.');
         const entry = {
           transactionId: generateLocalId('TRX'),
           userId,
