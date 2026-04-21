@@ -1444,7 +1444,7 @@
             </div>
           </button>`;
         }).join('');
-        const totalSpent = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='completed') ? Number(t.AmountFinal || 0) : 0), 0);
+        const totalSpent = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='completed_paid') ? Number(t.AmountFinal || 0) : 0), 0);
         const totalPending = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='pending') ? Number(t.AmountRequested || 0) : 0), 0);
         const totalNotCompleted = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='approved_request') ? Number(t.AmountRequested || 0) : 0), 0);
         el.innerHTML = `<div class="grid grid-3"><div class="card stat"><div class="small">Completed Spend</div><div class="value danger">${money(totalSpent)}</div></div><div class="card stat"><div class="small">Pending Requests</div><div class="value">${money(totalPending)}</div></div><div class="card stat"><div class="small">Not Completed</div><div class="value">${money(totalNotCompleted)}</div></div></div><div class="card"><h3 class="section-title">User Balances</h3><div class="small muted" style="margin-bottom:10px;">Click a user to load only that user's transactions.</div><div class="grid grid-3">${cards || '<div class="muted">No users</div>'}</div></div>`;
