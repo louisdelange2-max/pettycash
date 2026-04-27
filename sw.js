@@ -1,4 +1,4 @@
-const CACHE_NAME = "petty-cash-pwa-v10.04";
+const CACHE_NAME = "petty-cash-pwa-v10.05";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -49,7 +49,7 @@ importScripts('https://www.gstatic.com/firebasejs/12.2.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/12.2.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyCoARI_5Aj06ZF2GRFve_u75u9zI9RRd9c',
+  apiKey: 'AIzaSyCqARi_5Aj06ZE2GRFve_u75u9zI9RRd9c',
   authDomain: 'pettycash-earthlabs.firebaseapp.com',
   projectId: 'pettycash-earthlabs',
   storageBucket: 'pettycash-earthlabs.firebasestorage.app',
