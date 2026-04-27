@@ -1,4 +1,4 @@
-const CACHE_NAME = "petty-cash-pwa-v10.03";
+const CACHE_NAME = "petty-cash-pwa-v10.04";
 const APP_SHELL = [
   "./",
   "./index.html",
