@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petty Cash App Live v5 Fixed</title>
+
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <style>
+    :root{
+      --bg:#f5f7fb; --card:#fff; --text:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+      --primary:#2563eb; --primary-dark:#1d4ed8; --success:#15803d; --danger:#dc2626;
+      --shadow:0 10px 30px rgba(15,23,42,.08); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    .app{max-width:min(1500px,96vw);margin:0 auto;padding:20px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .brand{font-size:24px;font-weight:700}
+    .muted{color:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .grid{display:grid;gap:16px}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:900px){.grid-3,.grid-4{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:stretch}}
+    @media (min-width:1200px){.app{padding:24px}.card{padding:20px}.grid-3{grid-template-columns:repeat(3,minmax(280px,1fr))}.grid-4{grid-template-columns:repeat(4,minmax(220px,1fr))}table{font-size:13px}th,td{padding:10px 8px}}
+    h1,h2,h3{margin:0 0 10px}
+    .stat{display:flex;flex-direction:column;gap:8px}
+    .stat .value{font-size:28px;font-weight:700}
+    .success{color:var(--success)} .danger{color:var(--danger)}
+    input,select,textarea,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #cbd5e1;font-size:14px;font-family:inherit}
+    textarea{min-height:90px;resize:vertical}
+    button{border:none;background:var(--primary);color:#fff;cursor:pointer;font-weight:700}
+    button:hover{background:var(--primary-dark)}
+    button.secondary{background:#e5e7eb;color:#111827}
+    button.secondary:hover{background:#d1d5db}
+    button.success-btn{background:var(--success)}
+    button.danger-btn{background:var(--danger)}
+    button:disabled{opacity:.65;cursor:not-allowed}
+    .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .row-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media (max-width:700px){.row,.row-3{grid-template-columns:1fr}}
+    .stack{display:flex;flex-direction:column;gap:12px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}.actions>*{flex:1 1 140px}
+    .hidden{display:none!important}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:700}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+    th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+    .entry-type{font-weight:700;text-transform:uppercase;font-size:12px}.credit{color:var(--success)}.debit{color:var(--danger)}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .nav button.active{background:#111827;color:#fff}
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .login-box{width:min(460px,100%)}
+    .small{font-size:12px}
+    .banner{padding:12px 14px;border-radius:14px;margin-bottom:16px;font-size:14px}
+    .banner.info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+    .banner.ok{background:#ecfdf5;color:#166534;border:1px solid #bbf7d0}
+    .banner.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+    .right{text-align:right}.section-title{margin-bottom:14px}.nowrap{white-space:nowrap}
+.my-entries-table-wrap{display:block}
+.my-entries-mobile-list{display:none}
+.my-entry-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff;margin-bottom:12px;box-shadow:var(--shadow)}
+.my-entry-date{font-size:13px;color:var(--muted);margin-bottom:12px}
+.my-entry-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.my-entry-left{min-width:0;flex:1}
+.my-entry-chip{display:inline-block;padding:8px 12px;border-radius:12px;background:#eef2ff;color:#4f46e5;font-weight:700;margin-bottom:10px}
+.my-entry-remark{font-size:16px;line-height:1.35;word-break:break-word}
+.my-entry-side{text-align:right;min-width:110px}
+.my-entry-amount{font-size:22px;font-weight:700}
+.my-entry-balance{font-size:12px;color:var(--muted);margin-top:8px}
+.my-entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.my-entry-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.my-entry-value{font-size:14px;word-break:break-word}
+.my-entry-complete{margin-top:12px}
+.recent-entries-table-wrap{display:block}
+.recent-entries-mobile-list{display:none}
+.recent-entry-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff;margin-bottom:12px;box-shadow:var(--shadow)}
+.recent-entry-date{font-size:13px;color:var(--muted);margin-bottom:12px}
+.recent-entry-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.recent-entry-left{min-width:0;flex:1}
+.recent-entry-chip{display:inline-block;padding:8px 12px;border-radius:12px;background:#eef2ff;color:#4f46e5;font-weight:700;margin-bottom:10px}
+.recent-entry-remark{font-size:16px;line-height:1.35;word-break:break-word}
+.recent-entry-side{text-align:right;min-width:110px}
+.recent-entry-amount{font-size:22px;font-weight:700}
+.recent-entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.recent-entry-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.recent-entry-value{font-size:14px;word-break:break-word}
+.admin-balance-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;text-align:left;color:var(--text);transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;-webkit-tap-highlight-color:transparent}
+.admin-balance-card *{color:inherit}
+.admin-balance-card:hover,.admin-balance-card:focus,.admin-balance-card:active{background:#eff6ff;border-color:#bfdbfe;box-shadow:0 0 0 3px rgba(37,99,235,.10), var(--shadow);outline:none;transform:translateY(-1px);color:var(--text)}
+.admin-balance-name{font-size:18px;font-weight:700;line-height:1.3;word-break:break-word;color:#111827}
+.admin-balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.admin-balance-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.admin-balance-value{font-size:14px;word-break:break-word;color:#111827}
+.admin-balance-amount{font-size:24px;font-weight:700;line-height:1.2;word-break:break-word}
+.recent-entry-user{font-size:15px;font-weight:600;line-height:1.35;word-break:break-word;color:#111827}
+
+.tx-summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-bottom:12px}
+@media (max-width:700px){.tx-summary-grid{grid-template-columns:1fr}}
+
+.top-actions-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.notice-bell-wrap{position:relative}
+.notice-bell{position:relative;min-width:52px;width:auto;padding:12px 14px;background:#fff;color:#111827;border:1px solid var(--line);box-shadow:var(--shadow)}
+.notice-enable-btn{min-width:170px;width:auto;padding:12px 14px;background:#fff;color:#111827;border:1px solid var(--line);box-shadow:var(--shadow)}
+.notice-enable-btn:hover{background:#f8fafc}
+.notice-enable-btn.active{background:#ecfdf5;color:#166534;border-color:#bbf7d0}
+
+.install-app-btn{min-width:140px;width:auto;padding:12px 14px;background:#fff;color:#111827;border:1px solid var(--line);box-shadow:var(--shadow)}
+.install-app-btn:hover{background:#f8fafc}
+.install-app-btn.hidden{display:none!important}
+.notice-bell:hover{background:#f8fafc}
+.notice-badge{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--danger);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.notice-panel{position:absolute;right:0;top:calc(100% + 8px);width:min(420px,92vw);max-height:75vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:12px;z-index:50}
+.notice-panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.notice-panel-title{font-weight:700}
+.notice-clear-btn{width:auto;padding:8px 10px;border-radius:10px;background:#e5e7eb;color:#111827}
+.notice-item{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;margin-bottom:10px;cursor:pointer}
+.notice-item:last-child{margin-bottom:0}
+.notice-item:hover{background:#f8fafc}
+.notice-title{font-weight:700;margin-bottom:4px}
+.notice-meta{font-size:12px;color:var(--muted);margin-top:6px}
+.notice-empty{color:var(--muted);font-size:14px;padding:6px 2px}
+.blink-highlight{animation:blinkHighlight 1.2s ease-in-out 0s 3}
+@keyframes blinkHighlight{
+  0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,0);background:transparent}
+  50%{box-shadow:0 0 0 4px rgba(37,99,235,.28);background:#eff6ff}
+}
+@media (max-width:700px){
+  .my-entries-table-wrap{display:none}
+  .my-entries-mobile-list{display:block}
+  .recent-entries-table-wrap{display:none}
+  .recent-entries-mobile-list{display:block}
+  .my-entry-grid{grid-template-columns:1fr}
+  .recent-entry-grid{grid-template-columns:1fr}
+  .admin-balance-grid{grid-template-columns:1fr}
+  .top-actions-wrap{width:100%}
+  .top-actions-wrap > *{flex:1 1 100px}
+  .notice-bell-wrap{flex:0 0 auto}
+  .notice-bell{min-width:48px;padding:12px}
+  .notice-panel{
+    position:fixed;
+    top:88px;
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    width:min(92vw,360px);
+    max-height:60vh;
+    padding:10px;
+    z-index:1000;
+  }
+}
+  </style>
+</head>
+<body>
+  <div id="loginView" class="login-wrap">
+    <div class="login-box card stack">
+      <div>
+        <h1>Petty Cash App Live</h1>
+        <div class="muted">Connected to Google Apps Script backend.</div>
+      </div>
+      <div id="loginBanner" class="banner info">Login to continue.</div>
+      <input id="loginApiUrl" type="hidden" />
+      <div class="stack">
+        <label><div class="small muted">Username</div><input id="loginUsername" value="" /></label>
+        <label><div class="small muted">PIN</div><input id="loginPin" type="password" value="" /></label>
+      </div>
+      <button id="loginBtn" type="button">Login</button>
+      <button class="secondary install-app-btn hidden" id="loginInstallAppBtn" type="button">Install App</button>
+    </div>
+  </div>
+
+  <div id="appView" class="app hidden">
+    <div class="topbar">
+      <div><div class="brand">Petty Cash App Live</div><div class="muted" id="userWelcome"></div></div>
+      <div class="top-actions-wrap">
+        <div class="pill" id="syncState">Connected</div>
+        <button class="secondary notice-enable-btn" id="enableNotificationsBtn" type="button">Enable Notifications</button>
+        <button class="secondary install-app-btn hidden" id="installAppBtn" type="button">Install App</button>
+        <div class="notice-bell-wrap">
+          <button class="notice-bell" id="noticeBellBtn" type="button" aria-label="Notifications">🔔<span class="notice-badge hidden" id="noticeBadge">0</span></button>
+          <div class="notice-panel hidden" id="noticePanel"></div>
+        </div>
+        <button class="secondary" id="refreshBtn" type="button">Refresh</button>
+        <button class="secondary" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </div>
+    <div id="appBanner" class="banner info hidden"></div>
+    <div class="nav" id="navTabs"></div>
+    <section id="screen-dashboard" class="screen stack"></section>
+    <section id="screen-add-request" class="screen stack hidden"></section>
+    <section id="screen-my-entries" class="screen stack hidden"></section>
+    <section id="screen-transactions" class="screen stack hidden"></section>
+    <section id="screen-users" class="screen stack hidden"></section>
+    <section id="screen-message" class="screen stack hidden"></section>
+    <section id="screen-settings" class="screen stack hidden"></section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/12.2.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.2.0/firebase-messaging-compat.js"></script>
+
+  <script>
+    const STORAGE_KEY = 'petty_cash_app_v5_live_fixed';
+    const CREDENTIALS_STORAGE_KEY = STORAGE_KEY + '_credentials';
+    const NOTIFICATION_OPEN_STORAGE_KEY = STORAGE_KEY + '_pending_notification_open';
+    const SA_TIMEZONE = 'Africa/Johannesburg';
+    const SESSION_HOURS = 4;
+    const HARDCODED_API_URL = 'https://script.google.com/macros/s/AKfycbyomkrlvfo2TNVY18YeGON1jvgZlHI_xeILInp4iVNhl5eSjxiYVmsJIGx-8ttAs-CA/exec';
+    const LOGIN_BANNER_DEFAULT = 'Login to continue.';
+    const firebaseConfig = {
+  apiKey: "AIzaSyCqARi_5Aj06ZE2GRFve_u75u9zI9RRd9c",
+  authDomain: "pettycash-earthlabs.firebaseapp.com",
+  projectId: "pettycash-earthlabs",
+  storageBucket: "pettycash-earthlabs.firebasestorage.app",
+  messagingSenderId: "477886037099",
+  appId: "1:477886037099:web:1e3f284c52d1f98da5852e",
+  measurementId: "G-WPFSZTCEDD"
+};
+    const FCM_VAPID_PUBLIC_KEY = 'BGsEeKK2g7Q0UssgyH4k0NHztNYk3oeZO9J1_mMJb3IF_0DeQ_vs7_pbng5GgGcLc35lBtA9nFj4Y1dJyQ3XQ-g';
+
+    const SYNC_INTERVAL_MS = 15 * 60 * 1000;
+    const state = {
+      selectedAdminUserId: 'all',
+      apiUrl: HARDCODED_API_URL,
+      token: '',
+      user: null,
+      sessionExpiresAt: '',
+      lastSyncAt: '',
+      settings: { allowBackdate: 'no', maxBackdateDays: '3', currency: 'ZAR' },
+      categories: ['fuel','transport','stationery','meals','accommodation','maintenance','site materials','office supplies','other'],
+      users: [],
+      transactions: [],
+      pendingFiles: {},
+      pendingPaymentFiles: {},
+      pendingRequestFiles: [],
+      pendingRequestFile: null,
+      requestDraft: null,
+      pendingOps: [],
+      syncTimerId: null,
+      isSyncing: false,
+      dismissedNotifications: [],
+      notificationsOpen: false,
+      pendingBlinkId: '',
+      sessionTimerId: null,
+      browserNotificationsEnabled: false,
+      shownBrowserNotificationIds: [],
+      fcmToken: '',
+      lastLoginBanner: LOGIN_BANNER_DEFAULT,
+      lastLoginBannerType: 'info'
+    };
+
+    function loadCredentialBackup(){
+      try {
+        const saved = JSON.parse(localStorage.getItem(CREDENTIALS_STORAGE_KEY) || '{}');
+        if (!state.savedUsername && saved.savedUsername) state.savedUsername = saved.savedUsername || '';
+        if (!state.savedPin && saved.savedPin) state.savedPin = saved.savedPin || '';
+      } catch (e) {}
+    }
+    function saveCredentialBackup(){
+      try {
+        localStorage.setItem(CREDENTIALS_STORAGE_KEY, JSON.stringify({
+          savedUsername: state.savedUsername || '',
+          savedPin: state.savedPin || ''
+        }));
+      } catch (e) {}
+    }
+    function clearCredentialBackup(){
+      try { localStorage.removeItem(CREDENTIALS_STORAGE_KEY); } catch (e) {}
+    }
+
+    function loadLocal(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        state.apiUrl = HARDCODED_API_URL;
+        state.token = saved.token || '';
+        state.user = saved.user || null;
+        state.savedUsername = saved.savedUsername || '';
+        state.savedPin = saved.savedPin || '';
+        state.sessionExpiresAt = saved.sessionExpiresAt || '';
+        state.lastSyncAt = saved.lastSyncAt || '';
+        state.dismissedNotifications = Array.isArray(saved.dismissedNotifications) ? saved.dismissedNotifications : [];
+        state.browserNotificationsEnabled = !!saved.browserNotificationsEnabled;
+        state.shownBrowserNotificationIds = Array.isArray(saved.shownBrowserNotificationIds) ? saved.shownBrowserNotificationIds : [];
+        state.fcmToken = saved.fcmToken || '';
+        state.pendingFiles = {};
+        state.pendingPaymentFiles = {};
+        state.pendingRequestFiles = [];
+        state.pendingRequestFile = null;
+        state.pendingOps = Array.isArray(saved.pendingOps) ? saved.pendingOps : [];
+        state.transactions = Array.isArray(saved.transactions) ? saved.transactions : [];
+        state.users = Array.isArray(saved.users) ? saved.users : [];
+        state.categories = Array.isArray(saved.categories) && saved.categories.length ? saved.categories : state.categories;
+        state.settings = saved.settings && typeof saved.settings === 'object' ? Object.assign({}, state.settings, saved.settings) : state.settings;
+      }catch(e){}
+      loadCredentialBackup();
+    }
+    function saveLocal(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        apiUrl: HARDCODED_API_URL,
+        token: state.token,
+        user: state.user,
+        savedUsername: state.savedUsername || '',
+        savedPin: state.savedPin || '',
+        sessionExpiresAt: state.sessionExpiresAt || '',
+        lastSyncAt: state.lastSyncAt || '',
+        dismissedNotifications: state.dismissedNotifications || [],
+        browserNotificationsEnabled: !!state.browserNotificationsEnabled,
+        shownBrowserNotificationIds: state.shownBrowserNotificationIds || [],
+        fcmToken: state.fcmToken || '',
+        pendingFiles: {},
+        pendingPaymentFiles: {},
+        pendingRequestFiles: [],
+        pendingRequestFile: null,
+        pendingOps: state.pendingOps || [],
+        transactions: state.transactions || [],
+        users: state.users || [],
+        categories: state.categories || [],
+        settings: state.settings || {}
+      }));
+      saveCredentialBackup();
+    }
+    function clearLocal(){
+      const keep = {
+        apiUrl: HARDCODED_API_URL,
+        savedUsername: state.savedUsername || '',
+        savedPin: state.savedPin || '',
+        settings: state.settings,
+        categories: state.categories,
+        browserNotificationsEnabled: state.browserNotificationsEnabled,
+        shownBrowserNotificationIds: state.shownBrowserNotificationIds,
+        fcmToken: '',
+        dismissedNotifications: state.dismissedNotifications
+      };
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(keep));
+    }
+    function sessionValid(){ return !!(state.token && state.sessionExpiresAt && new Date(state.sessionExpiresAt).getTime() > Date.now()); }
+    function sessionExpiringSoon(){
+      if (!state.sessionExpiresAt) return true;
+      return (new Date(state.sessionExpiresAt).getTime() - Date.now()) < (5 * 60 * 1000);
+    }
+
+    function todayISO(){
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat('en-CA', { timeZone: SA_TIMEZONE, year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(now);
+      const y = parts.find(p => p.type === 'year').value;
+      const m = parts.find(p => p.type === 'month').value;
+      const d = parts.find(p => p.type === 'day').value;
+      return `${y}-${m}-${d}`;
+    }
+    function currentSATime(){
+      return new Intl.DateTimeFormat('en-GB', { timeZone: SA_TIMEZONE, hour:'2-digit', minute:'2-digit', hour12:false }).format(new Date());
+    }
+    function nowSAIso(){
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: SA_TIMEZONE,
+        year:'numeric', month:'2-digit', day:'2-digit',
+        hour:'2-digit', minute:'2-digit', second:'2-digit',
+        hour12:false
+      }).formatToParts(now);
+      const get = t => parts.find(p => p.type === t).value;
+      return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}+02:00`;
+    }
+    function formatSADateOnly(value){
+      if(!value) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return String(value);
+      const dt = new Date(value);
+      if(isNaN(dt.getTime())) return String(value);
+      const parts = new Intl.DateTimeFormat('en-CA', { timeZone: SA_TIMEZONE, year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(dt);
+      const y = parts.find(p => p.type === 'year').value;
+      const m = parts.find(p => p.type === 'month').value;
+      const d = parts.find(p => p.type === 'day').value;
+      return `${y}-${m}-${d}`;
+    }
+    function normalizeTimeValue(value){
+      if (value === null || typeof value === 'undefined') return '';
+      const raw = String(value).trim();
+      if (!raw) return '';
+      const plain = raw.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+      if (plain) return plain[1].padStart(2, '0') + ':' + plain[2];
+      if (raw.includes('1899-12-30')) {
+        const dt = new Date(raw);
+        if (!isNaN(dt.getTime())) {
+          return new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', hour:'2-digit', minute:'2-digit', hour12:false }).format(dt);
+        }
+      }
+      const dt = new Date(raw);
+      if (!isNaN(dt.getTime())) {
+        return new Intl.DateTimeFormat('en-GB', { timeZone: SA_TIMEZONE, hour:'2-digit', minute:'2-digit', hour12:false }).format(dt);
+      }
+      return raw;
+    }
+
+
+    function formatSADateTimeValue_(value){
+      if (value === null || typeof value === 'undefined') return '';
+      const raw = String(value).trim();
+      if (!raw) return '';
+      if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?$/.test(raw)) {
+        const dt = new Date(raw);
+        if (!isNaN(dt.getTime())) {
+          const parts = new Intl.DateTimeFormat('en-CA', {
+            timeZone: SA_TIMEZONE,
+            year:'numeric', month:'2-digit', day:'2-digit',
+            hour:'2-digit', minute:'2-digit', second:'2-digit',
+            hour12:false
+          }).formatToParts(dt);
+          const get = t => parts.find(p => p.type === t).value;
+          return `${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}:${get('second')}`;
+        }
+      }
+      const dt = new Date(raw);
+      if (!isNaN(dt.getTime()) && /[T:]|GMT|UTC|Z|\//i.test(raw)) {
+        const parts = new Intl.DateTimeFormat('en-CA', {
+          timeZone: SA_TIMEZONE,
+          year:'numeric', month:'2-digit', day:'2-digit',
+          hour:'2-digit', minute:'2-digit', second:'2-digit',
+          hour12:false
+        }).formatToParts(dt);
+        const get = t => parts.find(p => p.type === t).value;
+        return `${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}:${get('second')}`;
+      }
+      return raw.replace('T', ' ').replace(/\.\d+/, '').replace(/Z$/,'');
+    }
+
+    function excelCell_(value, cls){
+      const safe = excelSafe_(value).replace(/\n/g, '<br>');
+      return '<td class="' + (cls || 'text') + '">' + safe + '</td>';
+    }
+
+    function normalizeAttachmentList_(value){
+      if (Array.isArray(value)) return value.filter(Boolean);
+      if (!value) return [];
+      return [value].filter(Boolean);
+    }
+    function attachmentNamesText_(files){
+      const list = normalizeAttachmentList_(files);
+      if (!list.length) return '';
+      return list.map(function(file){ return String(file && file.name || 'attachment'); }).join(', ');
+    }
+    function splitStoredField_(value){
+      const raw = String(value || '').trim();
+      if (!raw) return [];
+      if (raw.includes('\n')) return raw.split(/\n+/).map(function(part){ return String(part || '').trim(); }).filter(Boolean);
+      if (raw.indexOf(' | ') >= 0) return raw.split(' | ').map(function(part){ return String(part || '').trim(); }).filter(Boolean);
+      return [raw];
+    }
+    function getTransactionFiles_(tx){
+      const names = splitStoredField_(tx && tx.FileName);
+      const refs = splitStoredField_(tx && tx.FileRef);
+      const links = splitStoredField_(tx && tx.FileLink);
+      const count = Math.max(names.length, refs.length, links.length);
+      const out = [];
+      for (let i = 0; i < count; i++) {
+        out.push({
+          name: names[i] || names[0] || 'attachment',
+          fileRef: refs[i] || '',
+          fileLink: links[i] || ''
+        });
+      }
+      return out.filter(function(item){ return item.name || item.fileRef || item.fileLink; });
+    }
+    function renderStoredFiles_(tx){
+      const files = getTransactionFiles_(tx);
+      if (!files.length) return '-';
+      return files.map(function(file){
+        const label = '📎 ' + escapeHtml(file.name || 'attachment');
+        return file.fileLink
+          ? `<a href="${escapeHtml(file.fileLink)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+          : label;
+      }).join('<br>');
+    }
+    function joinAttachmentField_(files, key){
+      return normalizeAttachmentList_(files).map(function(file){ return String(file && file[key] || '').trim(); }).filter(Boolean).join('\n');
+    }
+    function explainInvalidJsonResponse_(text, fallback){
+      const raw = String(text || '').trim();
+      if (raw.startsWith('<!DOCTYPE') || raw.startsWith('<html') || raw.startsWith('<HTML')) {
+        return fallback || 'The Apps Script URL returned an HTML page instead of JSON. Use the deployed Web App /exec URL, make sure access is allowed, and redeploy the script after changes.';
+      }
+      return (fallback || 'Invalid server response.') + ' ' + raw.slice(0, 180);
+    }
+
+    function escapeHtml(str){ return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+    function titleCase(str){ return String(str || '').replace(/\b\w/g, c => c.toUpperCase()); }
+    function normalizePaymentMethod_(value){
+      const raw = String(value || '').trim().toUpperCase();
+      return ['CASH','EFT','CARD'].includes(raw) ? raw : 'CASH';
+    }
+    function getPaymentMethod_(tx){
+      const direct = String((tx && (tx.PaymentMethod || tx.paymentMethod)) || '').trim();
+      if (direct) return normalizePaymentMethod_(direct);
+      const rawRef = String((tx && tx.ReferenceNumber) || '');
+      const match = rawRef.match(/^\[\[PM:(CASH|EFT|CARD)\]\]/i);
+      return match ? String(match[1] || 'CASH').toUpperCase() : 'CASH';
+    }
+    function getDisplayReferenceNumber_(tx){
+      const rawRef = String((tx && tx.ReferenceNumber) || '');
+      return rawRef.replace(/^\[\[PM:(CASH|EFT|CARD)\]\]/i, '').trim();
+    }
+    function isAdmin(){ return state.user && (state.user.role || state.user.Role) === 'admin'; }
+    function money(n){ return new Intl.NumberFormat('en-ZA',{style:'currency',currency:state.settings.currency || 'ZAR',minimumFractionDigits:2}).format(Number(n||0)); }
+    function setBanner(message,type='info'){ const el=document.getElementById('appBanner'); el.textContent=message; el.className='banner '+type; el.classList.remove('hidden'); }
+    function clearBanner(){ const el=document.getElementById('appBanner'); el.textContent=''; el.className='banner info hidden'; }
+    function validateDateAgainstSettings(dateStr){
+      if(!dateStr) throw new Error('Date is required.');
+
+      const raw = String(dateStr).trim();
+      const today = todayISO();
+
+      // Compare as yyyy-mm-dd strings first
+      if (raw >= today) return true;
+
+      const allowBackdate = String(state.settings.allowBackdate || 'no').toLowerCase() === 'yes';
+      if (!allowBackdate) throw new Error('Backdating is not allowed.');
+
+      const maxDays = Number(state.settings.maxBackdateDays || 0);
+
+      const start = new Date(raw + 'T00:00:00');
+      const end = new Date(today + 'T00:00:00');
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) throw new Error('Invalid date.');
+
+      const diffDays = Math.floor((end.getTime() - start.getTime()) / 86400000);
+      if (diffDays > maxDays) {
+        throw new Error('Backdating cannot be more than ' + maxDays + ' day(s).');
+      }
+      return true;
+    }
+    function sortTransactionsNewestFirst(items){ return items.slice().sort((a,b) => new Date(b.UpdatedAt || b.CreatedAt || b.FinalDate || b.RequestDate || 0) - new Date(a.UpdatedAt || a.CreatedAt || a.FinalDate || a.RequestDate || 0)); }
+    function notificationsSupported(){ return typeof window !== 'undefined' && 'Notification' in window; }
+    function pushSupported(){ return typeof window !== 'undefined' && notificationsSupported() && 'serviceWorker' in navigator && typeof window.firebase !== 'undefined' && !!firebase.messaging; }
+    let firebaseMessaging = null;
+    let firebaseMessagingBound = false;
+    async function initFirebaseMessaging(){
+      if (!pushSupported()) return null;
+      try {
+        if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        if (!firebaseMessaging) firebaseMessaging = firebase.messaging();
+        if (!firebaseMessagingBound && firebaseMessaging && typeof firebaseMessaging.onMessage === 'function') {
+          firebaseMessaging.onMessage(async function(payload){
+  try {
+    const incomingData = (payload && payload.data) || {};
+    if (incomingData.eventType === 'custom_message') {
+      const incomingTitle = incomingData.title || 'Petty cash message';
+      const incomingBody = incomingData.body || '';
+      if (incomingBody) {
+        try { setBanner(incomingTitle + ': ' + incomingBody, 'ok'); } catch (bannerErr) {}
+        if (state.browserNotificationsEnabled && Notification.permission === 'granted') {
+          try { new Notification(incomingTitle, { body: incomingBody, tag: 'custom-message-' + (incomingData.sentAt || Date.now()) }); } catch (notifyErr) {}
+        }
+      }
+      if (typeof renderTopNotifications === 'function') renderTopNotifications();
+      return;
+    }
+    if (state && state.token && canReachServer()) {
+      await refreshFromBackend(true, { silent: true, skipQueueFlush: true });
+    } else {
+      if (typeof renderTopNotifications === 'function') renderTopNotifications();
+      if (typeof renderTransactions === 'function' && isAdmin()) renderTransactions();
+      if (typeof renderMyEntries === 'function' && !isAdmin()) renderMyEntries();
+    }
+  } catch (e) {
+    try {
+      if (typeof renderTopNotifications === 'function') renderTopNotifications();
+    } catch (inner) {}
+  }
+});
+          firebaseMessagingBound = true;
+        }
+        return firebaseMessaging;
+      } catch (e) {
+        return null;
+      }
+    }
+    async function getExistingPushSubscription(){
+      return state.fcmToken || '';
+    }
+    async function getOrCreateFcmToken(requestPermission){
+      if (!pushSupported()) return '';
+      if (Notification.permission === 'denied') return '';
+      let permission = Notification.permission || 'default';
+      if (requestPermission && permission !== 'granted') permission = await Notification.requestPermission();
+      if (permission !== 'granted') return '';
+      const reg = await navigator.serviceWorker.ready;
+      const messaging = await initFirebaseMessaging();
+      if (!messaging || typeof messaging.getToken !== 'function') return '';
+      const token = await messaging.getToken({ vapidKey: FCM_VAPID_PUBLIC_KEY, serviceWorkerRegistration: reg });
+      state.fcmToken = token || '';
+      saveLocal();
+      return token || '';
+    }
+    async function syncExistingPushSubscription(){
+      if (!state.token || !canReachServer() || !pushSupported()) return;
+      try {
+        const token = await getOrCreateFcmToken(false);
+        if (token) {
+          await apiCall('savePushSubscription', {
+            token: token,
+            userAgent: navigator.userAgent || ''
+          }, { skipOfflineGuard: true });
+        }
+      } catch (e) {}
+    }
+    async function removeExistingPushSubscriptionFromServer(){
+      if (!state.token || !canReachServer()) return;
+      try {
+        const token = state.fcmToken || '';
+        if (token) {
+          await apiCall('removePushSubscription', { token: token }, { skipOfflineGuard: true });
+        }
+      } catch (e) {}
+      state.fcmToken = '';
+      saveLocal();
+    }
+    function syncNotificationButton(){
+      const btn = document.getElementById('enableNotificationsBtn');
+      if (!btn) return;
+      if (!pushSupported()) {
+        btn.disabled = true;
+        btn.textContent = notificationsSupported() ? 'Push Not Supported' : 'Notifications Unsupported';
+        btn.classList.remove('active');
+        return;
+      }
+      const permission = Notification.permission || 'default';
+      const enabled = !!state.browserNotificationsEnabled && permission === 'granted' && !!state.fcmToken;
+      btn.classList.toggle('active', enabled);
+
+      if (!FCM_VAPID_PUBLIC_KEY) {
+        btn.disabled = true;
+        btn.textContent = 'Add FCM Key';
+      } else if (enabled) {
+        btn.disabled = true;
+        btn.textContent = 'Push On';
+        btn.title = 'Push is already enabled on this device.';
+      } else if (permission === 'denied') {
+        btn.disabled = true;
+        btn.textContent = 'Notifications Blocked';
+        btn.title = 'Allow notifications in browser settings first.';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Enable Push';
+        btn.title = '';
+      }
+    }
+    async function enableBrowserNotifications(){
+      if (state.browserNotificationsEnabled && Notification.permission === 'granted' && state.fcmToken) {
+        syncNotificationButton();
+        return true;
+      }
+      if (!pushSupported()) {
+        setBanner('This device/browser does not support Firebase web push notifications.', 'error');
+        syncNotificationButton();
+        return false;
+      }
+      if (!FCM_VAPID_PUBLIC_KEY) {
+        setBanner('FCM VAPID public key is missing in index.html.', 'error');
+        syncNotificationButton();
+        return false;
+      }
+      if (Notification.permission === 'denied') {
+        state.browserNotificationsEnabled = false;
+        saveLocal();
+        syncNotificationButton();
+        setBanner('Notifications are blocked in this browser. Allow them in browser settings first.', 'error');
+        return false;
+      }
+      try {
+        const token = await getOrCreateFcmToken(true);
+        state.browserNotificationsEnabled = !!token;
+        saveLocal();
+        if (!token) {
+          syncNotificationButton();
+          setBanner('Notification permission was not granted.', 'error');
+          return false;
+        }
+        if (state.token && canReachServer()) {
+          await apiCall('savePushSubscription', {
+            token: token,
+            userAgent: navigator.userAgent || ''
+          }, { skipOfflineGuard: true });
+        }
+        syncNotificationButton();
+        setBanner('Firebase push enabled on this device.', 'ok');
+        try { maybeShowBrowserNotifications(true); } catch(e) {}
+        return true;
+      } catch (err) {
+        syncNotificationButton();
+        setBanner('Could not enable Firebase push: ' + (err.message || err), 'error');
+        return false;
+      }
+    }
+
+    async function autoEnablePushIfPossible_(requestPermission){
+      if (!pushSupported()) {
+        syncNotificationButton();
+        return false;
+      }
+      if (!FCM_VAPID_PUBLIC_KEY) {
+        syncNotificationButton();
+        return false;
+      }
+      if (Notification.permission === 'denied') {
+        state.browserNotificationsEnabled = false;
+        saveLocal();
+        syncNotificationButton();
+        return false;
+      }
+      if (requestPermission && Notification.permission !== 'granted') {
+        return await enableBrowserNotifications();
+      }
+      if (Notification.permission !== 'granted') {
+        syncNotificationButton();
+        return false;
+      }
+      try {
+        const token = await getOrCreateFcmToken(false);
+        state.browserNotificationsEnabled = !!token;
+        saveLocal();
+        if (token && state.token && canReachServer()) {
+          await apiCall('savePushSubscription', {
+            token: token,
+            userAgent: navigator.userAgent || ''
+          }, { skipOfflineGuard: true });
+        }
+        syncNotificationButton();
+        return !!token;
+      } catch (e) {
+        syncNotificationButton();
+        return false;
+      }
+    }
+    function maybeShowBrowserNotifications(markCurrentAsSeen){
+      if (!notificationsSupported()) return;
+      if (!(state.browserNotificationsEnabled && Notification.permission === 'granted')) return;
+      const notices = getTopNotifications();
+      const seen = new Set(state.shownBrowserNotificationIds || []);
+      if (markCurrentAsSeen) {
+        notices.forEach(n => seen.add(n.id));
+        state.shownBrowserNotificationIds = Array.from(seen).slice(-200);
+        saveLocal();
+        return;
+      }
+      notices.forEach(n => {
+        if (seen.has(n.id)) return;
+        seen.add(n.id);
+        try {
+          const note = new Notification(n.title || 'Notification', {
+            body: n.body || '',
+            tag: n.id,
+            renotify: false
+          });
+          note.onclick = function(){
+            try { window.focus(); } catch(e) {}
+            openNotification(n.id);
+            try { note.close(); } catch(e) {}
+          };
+        } catch(e) {}
+      });
+      state.shownBrowserNotificationIds = Array.from(seen).slice(-200);
+      saveLocal();
+    }
+
+
+    function canReachServer(){
+      return typeof navigator === 'undefined' ? true : navigator.onLine !== false;
+    }
+    function updateSyncState(message, tone){
+      const el = document.getElementById('syncState');
+      if (!el) return;
+      let text = message || 'Connected';
+      if (!message) {
+        if (!canReachServer()) text = state.pendingOps.length ? `Offline • ${state.pendingOps.length} queued` : 'Offline';
+        else if (state.isSyncing) text = 'Syncing...';
+        else if (state.pendingOps.length) text = `${state.pendingOps.length} queued`;
+        else text = 'Connected';
+      }
+      el.textContent = text;
+      el.style.background = tone === 'error' ? '#fef2f2' : tone === 'ok' ? '#ecfdf5' : tone === 'warn' ? '#fff7ed' : '#eff6ff';
+      el.style.color = tone === 'error' ? '#991b1b' : tone === 'ok' ? '#166534' : tone === 'warn' ? '#c2410c' : '#1d4ed8';
+    }
+    function generateLocalId(prefix){
+      return `${prefix}${Date.now()}${Math.floor(Math.random()*1000)}`;
+    }
+    function enqueueOperation(action, data, meta){
+      const op = {
+        opId: generateLocalId('OP'),
+        action,
+        data,
+        createdAt: nowSAIso(),
+        meta: meta || {}
+      };
+      state.pendingOps.push(op);
+      saveLocal();
+      updateSyncState();
+      return op;
+    }
+    function removePendingFileForOp(op){
+      if (!op || !op.meta || !op.meta.pendingFileKey) return;
+      delete state.pendingFiles[op.meta.pendingFileKey];
+    }
+    function applyLocalRequestTransaction(entry){
+      const tx = {
+        TransactionID: String(entry.transactionId || generateLocalId('LOCALTRX')),
+        UserID: String(entry.userId || ''),
+        UserName: String(entry.userName || ''),
+        RequestDate: String(entry.requestDate || ''),
+        FinalDate: String(entry.finalDate || ''),
+        RequestTime: String(entry.requestTime || currentSATime()),
+        EntryType: String(entry.entryType || 'debit'),
+        AmountRequested: Number(entry.amountRequested || 0),
+        AmountFinal: entry.amountFinal === '' || entry.amountFinal === null || typeof entry.amountFinal === 'undefined' ? '' : Number(entry.amountFinal),
+        Category: String(entry.category || ''),
+        Supplier: String(entry.supplier || ''),
+        Remark: String(entry.remark || ''),
+        PaymentMethod: normalizePaymentMethod_(entry.paymentMethod || ''),
+        ReferenceNumber: String(entry.referenceNumber || ''),
+        FileName: String(entry.fileName || ''),
+        FileRef: String(entry.fileRef || ''),
+        FileLink: String(entry.fileLink || ''),
+        Status: String(entry.status || 'pending'),
+        CreatedBy: String(entry.createdBy || ''),
+        CreatedAt: String(entry.createdAt || nowSAIso()),
+        UpdatedAt: nowSAIso(),
+        ApprovedBy: String(entry.approvedBy || ''),
+        SyncStatus: 'queued',
+        IsBackdated: entry.isBackdated ? 'yes' : 'no'
+      };
+      updateTransactionInState(tx);
+      return tx;
+    }
+    function applyQueuedCompletion(data){
+      const tx = state.transactions.find(t => t.TransactionID === data.transactionId);
+      if (!tx) return;
+      tx.AmountFinal = Number(data.amountFinal || 0);
+      tx.FinalDate = String(data.finalDate || tx.FinalDate || '');
+      tx.Status = 'completed_paid';
+      tx.PaymentMethod = normalizePaymentMethod_(data.paymentMethod || tx.PaymentMethod || '');
+      tx.FileName = String(data.fileName || tx.FileName || '');
+      tx.FileRef = String(data.fileRef || tx.FileRef || '');
+      tx.FileLink = String(data.fileLink || tx.FileLink || '');
+      tx.UpdatedAt = nowSAIso();
+      tx.SyncStatus = 'queued';
+    }
+    function applyQueuedAdminUpdate(transactionId, status){
+      const tx = state.transactions.find(t => t.TransactionID === transactionId);
+      if (!tx) return;
+      tx.Status = status;
+      tx.UpdatedAt = nowSAIso();
+      tx.SyncStatus = 'queued';
+    }
+    function applyQueuedMarkPaid(data){
+      const tx = state.transactions.find(t => t.TransactionID === data.transactionId);
+      if (!tx) return;
+      tx.PaymentMethod = normalizePaymentMethod_(data.paymentMethod || tx.PaymentMethod || '');
+      tx.Status = 'paid';
+      tx.UpdatedAt = nowSAIso();
+      tx.SyncStatus = 'queued';
+      if (data.fileName) tx.FileName = String(data.fileName || tx.FileName || '');
+    }
+    async function flushPendingOperations(options){
+      const opts = options || {};
+      if (state.isSyncing || !state.token || !state.pendingOps.length || !canReachServer()) {
+        updateSyncState();
+        return;
+      }
+      state.isSyncing = true;
+      updateSyncState('Syncing...', 'info');
+      try {
+        const remaining = [];
+        for (const op of state.pendingOps) {
+          try {
+            const result = await apiCall(op.action, op.data, { skipOfflineGuard: true });
+            if (result && result.transaction) updateTransactionInState(result.transaction);
+            removePendingFileForOp(op);
+          } catch (err) {
+            if (!canReachServer()) {
+              remaining.push(op, ...state.pendingOps.slice(state.pendingOps.indexOf(op)+1));
+              break;
+            }
+            remaining.push(op);
+          }
+        }
+        state.pendingOps = remaining;
+        saveLocal();
+      } finally {
+        state.isSyncing = false;
+        updateSyncState();
+      }
+      if (state.token && canReachServer()) {
+        try {
+          await refreshFromBackend(false, { silent: true, skipQueueFlush: true });
+        } catch (e) {}
+      }
+    }
+    function startAutoSync(){
+      stopAutoSync();
+      if (!state.token) return;
+      state.syncTimerId = setInterval(function(){
+        if (!state.token) return;
+        flushPendingOperations({ silent: true }).catch(()=>{});
+        refreshFromBackend(false, { silent: true, skipQueueFlush: true }).catch(()=>{});
+      }, SYNC_INTERVAL_MS);
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+      updateSyncState();
+    }
+    function stopAutoSync(){
+      if (state.syncTimerId) {
+        clearInterval(state.syncTimerId);
+        state.syncTimerId = null;
+      }
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    }
+    function handleOnline(){
+      updateSyncState('Back online. Syncing...', 'ok');
+      flushPendingOperations().catch(()=>{});
+      refreshFromBackend(false, { silent: true, skipQueueFlush: true }).catch(()=>{});
+    }
+    function handleOffline(){
+      updateSyncState();
+    }
+
+    let deferredInstallPrompt = null;
+
+    function registerServiceWorker(){
+      if (!("serviceWorker" in navigator)) return;
+      window.addEventListener('load', function(){
+        navigator.serviceWorker.register('./sw.js').catch(function(){});
+      });
+    }
+    function bindInstallPrompt(){
+      const buttons = [document.getElementById('installAppBtn'), document.getElementById('loginInstallAppBtn')].filter(Boolean);
+      function showButtons(){ buttons.forEach(btn => btn.classList.remove('hidden')); }
+      function hideButtons(){ buttons.forEach(btn => btn.classList.add('hidden')); }
+      window.addEventListener('beforeinstallprompt', function(e){
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        showButtons();
+      });
+      window.addEventListener('appinstalled', function(){
+        deferredInstallPrompt = null;
+        hideButtons();
+      });
+      buttons.forEach(function(btn){
+        btn.onclick = async function(){
+          if (!deferredInstallPrompt) {
+            setBanner('Use browser menu and choose Install app if the install prompt is not available yet.', 'info');
+            return;
+          }
+          deferredInstallPrompt.prompt();
+          try { await deferredInstallPrompt.userChoice; } catch(e) {}
+          deferredInstallPrompt = null;
+          hideButtons();
+        };
+      });
+    }
+    function renderLoginBanner(){
+      const banner = document.getElementById('loginBanner');
+      if (!banner) return;
+      banner.className = 'banner ' + (state.lastLoginBannerType || 'info');
+      banner.textContent = state.lastLoginBanner || LOGIN_BANNER_DEFAULT;
+    }
+    function setLoginBanner(message, type='info'){
+      state.lastLoginBanner = message || LOGIN_BANNER_DEFAULT;
+      state.lastLoginBannerType = type || 'info';
+      renderLoginBanner();
+    }
+    function resetLoginBanner(message){
+      setLoginBanner(message || LOGIN_BANNER_DEFAULT, 'info');
+    }
+    function setLoginError(message){
+      setLoginBanner(message || 'Login failed', 'error');
+    }
+
+    function restoreLoginInputs(){
+      const u = document.getElementById('loginUsername');
+      const p = document.getElementById('loginPin');
+      if (u) u.value = state.savedUsername || '';
+      if (p) p.value = state.savedPin || '';
+    }
+
+
+    async function loginWithSavedCredentials_(showErrors){
+      if(!state.apiUrl) state.apiUrl = HARDCODED_API_URL;
+      const username = String(state.savedUsername || '').trim();
+      const pin = String(state.savedPin || '').trim();
+      if(!username || !pin) throw new Error('Saved login details are missing.');
+      const response = await fetch(state.apiUrl, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action:'login', data:{ username, pin } })
+      });
+      const text = await response.text();
+      let json;
+      try { json = JSON.parse(text); } catch(e) { throw new Error(explainInvalidJsonResponse_(text, 'Could not login.')); }
+      if(!json.ok) throw new Error(json.message || 'Login failed');
+      state.token = json.token;
+      state.user = json.user;
+      state.sessionExpiresAt = new Date(Date.now() + SESSION_HOURS * 60 * 60 * 1000).toISOString();
+      saveCredentialBackup();
+      saveLocal();
+      return json;
+    }
+
+    async function ensureActiveSession_(showErrors){
+      if (sessionValid() && !sessionExpiringSoon()) return true;
+      if (!state.apiUrl || !state.savedUsername || !state.savedPin) return false;
+      try {
+        await loginWithSavedCredentials_(showErrors);
+        return true;
+      } catch (err) {
+        if (showErrors) {
+          const banner = document.getElementById('loginBanner');
+          if (banner) {
+            banner.className='banner error';
+            banner.textContent = 'Session expired and saved login details are no longer valid. Please login again.';
+          }
+        }
+        return false;
+      }
+    }
+
+    async function keepSessionAlive_(options){
+      const opts = options || {};
+      if (!state.apiUrl || !state.savedUsername || !state.savedPin) return false;
+      try {
+        const ok = await ensureActiveSession_(!!opts.showErrors);
+        if (ok && state.user) {
+          if (document.getElementById('appView').classList.contains('hidden')) renderApp();
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    async function resumeSessionIfNeeded_(){
+      if (!state.savedUsername || !state.savedPin) return;
+      if (sessionValid() && !sessionExpiringSoon()) return;
+      const ok = await keepSessionAlive_({ showErrors: false });
+      if (ok && canReachServer()) {
+        try { await refreshFromBackend(false, { silent: true, skipQueueFlush: true }); } catch (e) {}
+      }
+    }
+
+    function bindSessionResumeWatcher(){
+      window.addEventListener('focus', function(){ resumeSessionIfNeeded_().catch(()=>{}); });
+      document.addEventListener('visibilitychange', function(){
+        if (document.visibilityState === 'visible') resumeSessionIfNeeded_().catch(()=>{});
+      });
+      window.addEventListener('pageshow', function(){ resumeSessionIfNeeded_().catch(()=>{}); });
+    }
+
+    function startSessionWatcher(){
+      stopSessionWatcher();
+      state.sessionTimerId = setInterval(async function(){
+        if (!state.apiUrl || !state.savedUsername || !state.savedPin) return;
+        if (sessionValid() && !sessionExpiringSoon()) return;
+        const ok = await keepSessionAlive_({ showErrors: false });
+        if (!ok) {
+          console.warn('Auto-login failed, waiting for manual login.');
+        } else if (canReachServer()) {
+          try { await refreshFromBackend(false, { silent: true, skipQueueFlush: true }); } catch (e) {}
+        }
+      }, 60000);
+    }
+
+    function stopSessionWatcher(){
+      if (state.sessionTimerId) {
+        clearInterval(state.sessionTimerId);
+        state.sessionTimerId = null;
+      }
+    }
+
+    async function apiCall(action, data, options){
+      const opts = options || {};
+      if(!state.apiUrl) state.apiUrl = HARDCODED_API_URL;
+      if (!opts.skipOfflineGuard && !canReachServer()) {
+        throw new Error('No internet connection.');
+      }
+      if (!opts.skipSessionRefresh && action !== 'login') {
+        const ok = await ensureActiveSession_(false);
+        if (!ok) throw new Error('Session expired. Please login again.');
+      }
+      const response = await fetch(state.apiUrl, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, token: state.token || '', data: data || {} })
+      });
+      const text = await response.text();
+      let json;
+      try { json = JSON.parse(text); } catch(e) { throw new Error(explainInvalidJsonResponse_(text, 'Could not reach the backend.')); }
+      if(!json.ok) throw new Error(json.message || 'Request failed');
+      return json;
+    }
+
+    function calculateTotals(userId){
+      const items = state.transactions.filter(t => t.UserID === userId);
+      let allocated=0, explicitCredits=0, spent=0, pending=0, notCompleted=0, balance=0;
+
+      items.forEach(t => {
+        const requested = Number(t.AmountRequested || 0);
+        const finalUsed = Number(t.AmountFinal || 0);
+        const paymentMethod = getPaymentMethod_(t);
+
+        if (t.EntryType === 'credit' && t.Status === 'completed') {
+          explicitCredits += Number(t.AmountFinal || t.AmountRequested || 0);
+        }
+
+        if (t.EntryType === 'debit' && (t.Status === 'approved_request' || t.Status === 'paid')) {
+          allocated += requested;
+          notCompleted += requested;
+          balance += requested;
+        }
+
+        if (t.EntryType === 'debit' && t.Status === 'completed_paid') {
+          spent += finalUsed;
+
+          if (paymentMethod === 'CASH') {
+            balance += (requested - finalUsed);
+          } else if (paymentMethod === 'EFT' || paymentMethod === 'CARD') {
+            balance += 0;
+          }
+        }
+
+        if (t.EntryType === 'debit' && t.Status === 'pending') {
+          pending += requested;
+        }
+      });
+
+      return {
+        allocated,
+        explicitCredits,
+        spent,
+        pending,
+        notCompleted,
+        balance: explicitCredits + balance
+      };
+    }
+
+    function formatNoticeDate(value){
+      if(!value) return '';
+      const dt = new Date(value);
+      if(isNaN(dt.getTime())) return String(value);
+      return new Intl.DateTimeFormat('en-ZA', {
+        timeZone: SA_TIMEZONE,
+        year:'numeric',
+        month:'2-digit',
+        day:'2-digit',
+        hour:'2-digit',
+        minute:'2-digit',
+        hour12:false
+      }).format(dt);
+    }
+    function getNoticeMeta_(tx){
+      const stamp = tx.UpdatedAt || tx.CreatedAt || tx.RequestDate || tx.FinalDate || '';
+      const formatted = formatNoticeDate(stamp);
+      return formatted || '';
+    }
+
+    function notificationIdFor(t, kind){
+      return `${kind}:${t.TransactionID || ''}:${t.Status || ''}:${t.UpdatedAt || t.CreatedAt || ''}`;
+    }
+
+    function getTopNotifications(){
+      const items = sortTransactionsNewestFirst(state.transactions);
+      const notices = [];
+
+      if (isAdmin()) {
+        const currentAdminName = String((state.user && (state.user.username || state.user.Username || state.user.fullName || state.user.FullName)) || '').trim().toLowerCase();
+        items.filter(t => t.EntryType === 'debit' && t.Status === 'pending').forEach(t => {
+          notices.push({
+            id: notificationIdFor(t, 'request'),
+            kind: 'request',
+            transactionId: t.TransactionID,
+            userId: t.UserID,
+            title: 'New request',
+            body: `${t.UserName || 'User'} requested ${money(t.AmountRequested)} for ${titleCase(t.Category || 'expense')}.`,
+            meta: getNoticeMeta_(t),
+            targetScreen: 'transactions'
+          });
+        });
+        items.filter(t => t.EntryType === 'debit' && t.Status === 'approved_request').forEach(t => {
+          const approvedBy = String(t.ApprovedBy || '').trim();
+          if (!approvedBy) return;
+          if (currentAdminName && approvedBy.toLowerCase() === currentAdminName) return;
+          notices.push({
+            id: notificationIdFor(t, 'admin-approved'),
+            kind: 'admin-approved',
+            transactionId: t.TransactionID,
+            userId: t.UserID,
+            title: 'Request approved',
+            body: `${approvedBy} approved ${t.UserName || 'the user'}'s request for ${money(t.AmountRequested)}.`,
+            meta: getNoticeMeta_(t),
+            targetScreen: 'transactions'
+          });
+        });
+        items.filter(t => t.EntryType === 'debit' && t.Status === 'paid').forEach(t => {
+          const approvedBy = String(t.ApprovedBy || '').trim();
+          if (currentAdminName && approvedBy.toLowerCase() === currentAdminName) return;
+          notices.push({
+            id: notificationIdFor(t, 'admin-paid'),
+            kind: 'admin-paid',
+            transactionId: t.TransactionID,
+            userId: t.UserID,
+            title: 'Marked paid',
+            body: `${approvedBy || 'Admin'} marked ${t.UserName || 'the user'}'s ${getPaymentMethod_(t)} request as paid.`,
+            meta: getNoticeMeta_(t),
+            targetScreen: 'transactions'
+          });
+        });
+        items.filter(t => t.EntryType === 'debit' && t.Status === 'completed_paid').forEach(t => {
+          notices.push({
+            id: notificationIdFor(t, 'admin-completed'),
+            kind: 'admin-completed',
+            transactionId: t.TransactionID,
+            userId: t.UserID,
+            title: 'Transaction completed',
+            body: `${t.UserName || 'User'} completed a ${getPaymentMethod_(t)} transaction for ${money(t.AmountFinal || t.AmountRequested)}.`,
+            meta: getNoticeMeta_(t),
+            targetScreen: 'transactions'
+          });
+        });
+      } else if (state.user) {
+        const userId = state.user.userId || state.user.UserID;
+        items.filter(t => t.UserID === userId && t.EntryType === 'debit' && t.Status === 'approved_request').forEach(t => {
+          notices.push({
+            id: notificationIdFor(t, 'approved'),
+            kind: 'approved',
+            transactionId: t.TransactionID,
+            userId: t.UserID,
+            title: 'Approved',
+            body: getPaymentMethod_(t) === 'CARD' ? `Your card request for ${money(t.AmountRequested)} was approved. You can now complete it.` : `Your request for ${money(t.AmountRequested)} under ${titleCase(t.Category || 'expense')} was approved. Waiting for admin payment confirmation.`,
+            meta: getNoticeMeta_(t),
+            targetScreen: 'my-entries'
+          });
+        });
+        items.filter(t => t.UserID === userId && t.EntryType === 'debit' && t.Status === 'paid').forEach(t => {
+          notices.push({
+            id: notificationIdFor(t, 'paid'),
+            kind: 'paid',
+            transactionId: t.TransactionID,
+            userId: t.UserID,
+            title: 'Marked paid',
+            body: `Your ${getPaymentMethod_(t)} request for ${money(t.AmountRequested)} is marked paid. You can now complete it.`,
+            meta: getNoticeMeta_(t),
+            targetScreen: 'my-entries'
+          });
+        });
+      }
+
+      const dismissed = new Set(state.dismissedNotifications || []);
+      return notices.filter(n => !dismissed.has(n.id)).slice(0, 20);
+    }
+
+    function clearAllNotifications(){
+      const ids = getTopNotifications().map(n => n.id);
+      state.dismissedNotifications = Array.from(new Set([...(state.dismissedNotifications || []), ...ids]));
+      state.notificationsOpen = false;
+      saveLocal();
+      renderTopNotifications();
+      const panel = document.getElementById('noticePanel');
+      if (panel) panel.classList.add('hidden');
+    }
+
+    function storePendingNotificationOpen_(transactionId){
+      const txId = String(transactionId || '').trim();
+      if (!txId) return;
+      try { localStorage.setItem(NOTIFICATION_OPEN_STORAGE_KEY, txId); } catch (e) {}
+    }
+    function consumePendingNotificationOpen_(){
+      try {
+        const txId = String(localStorage.getItem(NOTIFICATION_OPEN_STORAGE_KEY) || '').trim();
+        if (txId) localStorage.removeItem(NOTIFICATION_OPEN_STORAGE_KEY);
+        return txId;
+      } catch (e) { return ''; }
+    }
+    function getNotificationOpenParam_(){
+      try {
+        const params = new URLSearchParams(window.location.search || '');
+        const txId = String(params.get('tx') || params.get('transactionId') || '').trim();
+        if (txId) {
+          const cleanUrl = window.location.pathname + window.location.hash;
+          window.history.replaceState({}, document.title, cleanUrl || './');
+        }
+        return txId;
+      } catch (e) { return ''; }
+    }
+    async function openTransactionFromPush_(transactionId, options){
+      const txId = String(transactionId || '').trim();
+      if (!txId) return;
+      if (!state.user || !state.token) {
+        storePendingNotificationOpen_(txId);
+        return;
+      }
+      const opts = options || {};
+      try {
+        if (!opts.skipRefresh && canReachServer()) {
+          await refreshFromBackend(true, { silent: true, skipQueueFlush: true, skipPendingNotificationOpen: true });
+        }
+      } catch (e) {}
+
+      const tx = (state.transactions || []).find(function(item){ return String(item.TransactionID || '') === txId; });
+      if (typeof dismissNotificationsForTransaction_ === 'function') dismissNotificationsForTransaction_(txId);
+      if (tx && isAdmin()) state.selectedAdminUserId = tx.UserID || 'all';
+
+      if (isAdmin()) {
+        renderTransactions();
+        showScreen('transactions');
+      } else {
+        renderMyEntries();
+        showScreen('my-entries');
+      }
+
+      renderTopNotifications();
+      setTimeout(function(){ blinkTransaction(txId); }, 220);
+    }
+    function applyPendingNotificationOpen_(options){
+      const txId = consumePendingNotificationOpen_();
+      if (!txId) return;
+      openTransactionFromPush_(txId, options || { skipRefresh: true }).catch(function(){
+        storePendingNotificationOpen_(txId);
+      });
+    }
+
+    function isElementVisible_(el){
+      if (!el) return false;
+      if (!el.getClientRects || el.getClientRects().length === 0) return false;
+      const style = window.getComputedStyle(el);
+      if (!style || style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity || 1) === 0) return false;
+      let parent = el.parentElement;
+      while (parent) {
+        const parentStyle = window.getComputedStyle(parent);
+        if (parentStyle.display === 'none' || parentStyle.visibility === 'hidden') return false;
+        parent = parent.parentElement;
+      }
+      return true;
+    }
+
+    function findVisibleTransactionElement_(transactionId){
+      const txId = String(transactionId || '').trim();
+      if (!txId) return null;
+
+      const allMatches = Array.from(document.querySelectorAll('[data-transaction-id]')).filter(function(el){
+        return String(el.getAttribute('data-transaction-id') || '') === txId;
+      });
+      if (!allMatches.length) return null;
+
+      const mobileMatch = allMatches.find(function(el){
+        return isElementVisible_(el) && (el.classList.contains('recent-entry-card') || el.classList.contains('my-entry-card'));
+      });
+      if (mobileMatch) return mobileMatch;
+
+      const visibleMatch = allMatches.find(isElementVisible_);
+      return visibleMatch || allMatches[0];
+    }
+
+    function blinkTransaction(transactionId){
+      state.pendingBlinkId = transactionId || '';
+      const el = findVisibleTransactionElement_(transactionId);
+      if (el) {
+        el.classList.remove('blink-highlight');
+        void el.offsetWidth;
+        el.classList.add('blink-highlight');
+        el.scrollIntoView({ behavior:'smooth', block:'center' });
+        setTimeout(() => el.classList.remove('blink-highlight'), 3800);
+      }
+    }
+
+    function dismissNotificationsForTransaction_(transactionId){
+      const txId = String(transactionId || '').trim();
+      if (!txId) return;
+      const matchingIds = getTopNotifications()
+        .filter(function(n){ return String(n.transactionId || '') === txId; })
+        .map(function(n){ return n.id; });
+      if (!matchingIds.length) return;
+      state.dismissedNotifications = Array.from(new Set([...(state.dismissedNotifications || []), ...matchingIds]));
+      saveLocal();
+    }
+
+    function openNotification(notificationId){
+      const notice = getTopNotifications().find(n => n.id === notificationId);
+      if (!notice) return;
+
+      state.dismissedNotifications = Array.from(new Set([...(state.dismissedNotifications || []), notice.id]));
+      state.notificationsOpen = false;
+      state.pendingBlinkId = notice.transactionId || '';
+      saveLocal();
+
+      const panel = document.getElementById('noticePanel');
+      if (panel) panel.classList.add('hidden');
+
+      if (isAdmin()) {
+        state.selectedAdminUserId = notice.userId || 'all';
+        renderTransactions();
+        showScreen('transactions');
+      } else {
+        renderMyEntries();
+        showScreen('my-entries');
+      }
+
+      renderTopNotifications();
+
+      setTimeout(() => {
+        blinkTransaction(notice.transactionId || '');
+      }, 180);
+    }
+
+    function renderTopNotifications(){
+      const panel = document.getElementById('noticePanel');
+      const badge = document.getElementById('noticeBadge');
+      if (!panel || !badge) return;
+
+      const notices = getTopNotifications();
+      badge.textContent = String(notices.length);
+      badge.classList.toggle('hidden', notices.length === 0);
+
+      if (!notices.length) {
+        panel.innerHTML = `<div class="notice-panel-head"><div class="notice-panel-title">Notifications</div><button class="notice-clear-btn" id="noticeClearAllBtn" type="button">Clear all</button></div><div class="notice-empty">No new notifications.</div>`;
+      } else {
+        panel.innerHTML = `<div class="notice-panel-head"><div class="notice-panel-title">Notifications</div><button class="notice-clear-btn" id="noticeClearAllBtn" type="button">Clear all</button></div>${notices.map(n => `
+          <div class="notice-item" data-notification-id="${escapeHtml(n.id)}">
+            <div class="notice-title">${escapeHtml(n.title)}</div>
+            <div>${escapeHtml(n.body)}</div>
+            <div class="notice-meta">${escapeHtml(n.meta || '')}</div>
+          </div>
+        `).join('')}`;
+      }
+
+      const clearBtn = document.getElementById('noticeClearAllBtn');
+      if (clearBtn) clearBtn.onclick = function(ev){ ev.stopPropagation(); clearAllNotifications(); };
+
+      panel.querySelectorAll('.notice-item').forEach(item => {
+        item.onclick = function(ev){
+          ev.stopPropagation();
+          openNotification(item.getAttribute('data-notification-id'));
+        };
+      });
+
+      maybeShowBrowserNotifications(false);
+      syncNotificationButton();
+    }
+
+    function bindNotificationBell(){
+      const btn = document.getElementById('noticeBellBtn');
+      const panel = document.getElementById('noticePanel');
+      const wrap = document.querySelector('.notice-bell-wrap');
+      if (!btn || !panel || !wrap) return;
+
+      if (!window.__pettyCashNoticeGlobalBound) {
+        document.addEventListener('click', function(ev){
+          const wrapNow = document.querySelector('.notice-bell-wrap');
+          if (!wrapNow) return;
+          if (!wrapNow.contains(ev.target)) {
+            state.notificationsOpen = false;
+            const p = document.getElementById('noticePanel');
+            if (p) p.classList.add('hidden');
+          }
+        });
+        window.__pettyCashNoticeGlobalBound = true;
+      }
+
+      btn.onclick = function(ev){
+        ev.stopPropagation();
+        state.notificationsOpen = !state.notificationsOpen;
+        panel.classList.toggle('hidden', !state.notificationsOpen);
+      };
+
+      panel.onclick = function(ev){ ev.stopPropagation(); };
+    }
+
+    function renderTabs(){
+      const nav=document.getElementById('navTabs');
+      const tabs=isAdmin()
+        ? [['dashboard','Dashboard'],['add-request','Add Request'],['transactions','Transactions'],['users','Users'],['message','Message'],['settings','Settings']]
+        : [['dashboard','Dashboard'],['add-request','Add Request'],['my-entries','My Entries']];
+      nav.innerHTML=tabs.map((t,i)=>`<button type="button" class="${i===0?'active':''}" data-screen="${t[0]}">${t[1]}</button>`).join('');
+      nav.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+        if (btn.dataset.screen === 'transactions') {
+          state.selectedAdminUserId = 'all';
+          renderTransactions();
+        }
+        showScreen(btn.dataset.screen);
+      }));
+    }
+    function showScreen(name){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+      const target=document.getElementById('screen-'+name);
+      if(target) target.classList.remove('hidden');
+      document.querySelectorAll('#navTabs button').forEach(btn=>btn.classList.toggle('active', btn.dataset.screen===name));
+      clearBanner();
+    }
+
+
+    function formatSADateDisplay(value){
+      if(!value) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+        const [y,m,d] = String(value).split('-').map(Number);
+        const dt = new Date(Date.UTC(y, m - 1, d));
+        return new Intl.DateTimeFormat('en-GB', { timeZone: SA_TIMEZONE, day:'numeric', month:'long', year:'numeric' }).format(dt);
+      }
+      const dt = new Date(value);
+      if(isNaN(dt.getTime())) return String(value);
+      return new Intl.DateTimeFormat('en-GB', { timeZone: SA_TIMEZONE, day:'numeric', month:'long', year:'numeric' }).format(dt);
+    }
+
+    function renderRecentEntriesCards(items, showUser, showComplete){
+      if(!items.length) return '<div class="muted">No entries found.</div>';
+      return `<div class="recent-entries-mobile-list">${items.map(t=>{
+        const dateText = formatSADateDisplay(t.FinalDate || t.RequestDate || '');
+        const timeText = escapeHtml(normalizeTimeValue(t.RequestTime || ''));
+        const amountText = t.AmountFinal===''||t.AmountFinal==null ? money(t.AmountRequested) : money(t.AmountFinal);
+        const amountClass = t.EntryType === 'credit' ? 'success' : 'danger';
+        const userBlock = showUser ? `<div><div class="recent-entry-label">User</div><div class="recent-entry-value">${escapeHtml(t.UserName || '')}</div></div>` : '';
+        const completeBlock = showComplete && renderCompleteCell(t) !== '-' ? `<div><div class="recent-entry-label">Complete</div><div class="recent-entry-value">${renderCompleteCell(t)}</div></div>` : '';
+        return `<div class="recent-entry-card" data-transaction-id="${escapeHtml(t.TransactionID || '')}">
+          <div class="recent-entry-date">${escapeHtml(dateText)}${timeText ? ` • ${timeText}` : ''}</div>
+          <div class="recent-entry-card-head">
+            <div class="recent-entry-left">
+              <div class="recent-entry-chip">${escapeHtml(titleCase(t.Category || t.EntryType || 'Entry'))}</div>
+              <div class="recent-entry-remark">${escapeHtml(t.Remark || '')}</div>
+              <div class="small muted" style="margin-top:6px;">Payment: ${escapeHtml(getPaymentMethod_(t))}</div>${getDisplayReferenceNumber_(t) ? `<div class="small muted">Ref: ${escapeHtml(getDisplayReferenceNumber_(t))}</div>` : ''}
+              ${t.Supplier ? `<div class="small muted">${escapeHtml(t.Supplier)}</div>` : ''}
+            </div>
+            <div class="recent-entry-side">
+              <div class="recent-entry-amount ${amountClass}">${amountText}</div>
+              <div style="margin-top:8px;">${renderStatusPill(t)}</div>
+            </div>
+          </div>
+          <div class="recent-entry-grid">
+            ${userBlock}
+            <div><div class="recent-entry-label">Type</div><div class="recent-entry-value"><span class="entry-type ${t.EntryType}">${escapeHtml(t.EntryType)}</span></div></div>
+            <div><div class="recent-entry-label">Flags</div><div class="recent-entry-value">${renderFlags(t)}</div></div>
+            <div><div class="recent-entry-label">Slip</div><div class="recent-entry-value">${renderStoredFiles_(t)}</div></div>
+            <div><div class="recent-entry-label">Requested</div><div class="recent-entry-value">${money(t.AmountRequested)}</div></div>
+            <div><div class="recent-entry-label">Final</div><div class="recent-entry-value">${t.AmountFinal===''||t.AmountFinal==null?'-':money(t.AmountFinal)}</div></div>
+            ${completeBlock}
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+    }
+
+    function renderAdminTransactionsCards(items){
+      if(!items.length) return '<div class="recent-entries-mobile-list"><div class="muted">No entries found.</div></div>';
+      return `<div class="recent-entries-mobile-list">${items.map(t=>{
+        const dateText = formatSADateDisplay(t.FinalDate || t.RequestDate || '');
+        const timeText = escapeHtml(normalizeTimeValue(t.RequestTime || ''));
+        const amountText = t.AmountFinal===''||t.AmountFinal==null ? money(t.AmountRequested) : money(t.AmountFinal);
+        const amountClass = t.EntryType === 'credit' ? 'success' : 'danger';
+        return `<div class="recent-entry-card" data-transaction-id="${escapeHtml(t.TransactionID || '')}">
+          <div class="recent-entry-date">${escapeHtml(dateText)}${timeText ? ` • ${timeText}` : ''}</div>
+          <div class="recent-entry-card-head">
+            <div class="recent-entry-left">
+              <div class="recent-entry-chip">${escapeHtml(titleCase(t.Category || t.EntryType || 'Entry'))}</div>
+              <div class="recent-entry-remark">${escapeHtml(t.Remark || '')}</div>
+              <div class="recent-entry-user" style="margin-top:6px;">User: ${escapeHtml(t.UserName || '')}</div>
+              <div class="small muted">Payment: ${escapeHtml(getPaymentMethod_(t))}</div>${getDisplayReferenceNumber_(t) ? `<div class="small muted">Ref: ${escapeHtml(getDisplayReferenceNumber_(t))}</div>` : ''}
+              ${t.Supplier ? `<div class="small muted">${escapeHtml(t.Supplier)}</div>` : ''}
+            </div>
+            <div class="recent-entry-side">
+              <div class="recent-entry-amount ${amountClass}">${amountText}</div>
+              <div style="margin-top:8px;">${renderStatusPill(t)}</div>
+            </div>
+          </div>
+          <div class="recent-entry-grid">
+            <div><div class="recent-entry-label">Type</div><div class="recent-entry-value"><span class="entry-type ${t.EntryType}">${escapeHtml(t.EntryType)}</span></div></div>
+            <div><div class="recent-entry-label">Flags</div><div class="recent-entry-value">${renderFlags(t)}</div></div>
+            <div><div class="recent-entry-label">Slip</div><div class="recent-entry-value">${renderSlipCell(t)}</div></div>
+            <div><div class="recent-entry-label">Requested</div><div class="recent-entry-value">${money(t.AmountRequested)}</div></div>
+            <div><div class="recent-entry-label">Final</div><div class="recent-entry-value">${t.AmountFinal===''||t.AmountFinal==null?'-':money(t.AmountFinal)}</div></div>
+            <div><div class="recent-entry-label">Admin Action</div><div class="recent-entry-value">${renderAdminActionCell(t)}</div></div>
+            <div><div class="recent-entry-label">Complete</div><div class="recent-entry-value">${renderCompleteCell(t)}</div></div>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+    }
+
+    function renderMyEntriesCards(items){
+      if(!items.length) return '<div class="muted">No entries found.</div>';
+      return `<div class="my-entries-mobile-list">${items.map(t=>{
+        const dateText = formatSADateDisplay(t.FinalDate || t.RequestDate || '');
+        const timeText = escapeHtml(normalizeTimeValue(t.RequestTime || ''));
+        const completeCell = renderCompleteCell(t);
+        const amountText = t.AmountFinal===''||t.AmountFinal==null ? money(t.AmountRequested) : money(t.AmountFinal);
+        const amountClass = t.EntryType === 'credit' ? 'success' : 'danger';
+        const balanceText = state.user ? money(calculateTotals(state.user.userId || state.user.UserID).balance) : '';
+        return `<div class="my-entry-card" data-transaction-id="${escapeHtml(t.TransactionID || '')}">
+          <div class="my-entry-date">${escapeHtml(dateText)}${timeText ? ` • ${timeText}` : ''}</div>
+          <div class="my-entry-card-head">
+            <div class="my-entry-left">
+              <div class="my-entry-chip">${escapeHtml(titleCase(t.Category || t.EntryType || 'Entry'))}</div>
+              <div class="my-entry-remark">${escapeHtml(t.Remark || '')}</div>
+              <div class="small muted" style="margin-top:6px;">Payment: ${escapeHtml(getPaymentMethod_(t))}</div>${getDisplayReferenceNumber_(t) ? `<div class="small muted">Ref: ${escapeHtml(getDisplayReferenceNumber_(t))}</div>` : ''}
+              ${t.Supplier ? `<div class="small muted">${escapeHtml(t.Supplier)}</div>` : ''}
+            </div>
+            <div class="my-entry-side">
+              <div class="my-entry-amount ${amountClass}">${amountText}</div>
+              <div style="margin-top:8px;">${renderStatusPill(t)}</div>
+              ${balanceText ? `<div class="my-entry-balance">Balance: ${balanceText}</div>` : ''}
+            </div>
+          </div>
+          <div class="my-entry-grid">
+            <div><div class="my-entry-label">Type</div><div class="my-entry-value"><span class="entry-type ${t.EntryType}">${escapeHtml(t.EntryType)}</span></div></div>
+            <div><div class="my-entry-label">Flags</div><div class="my-entry-value">${renderFlags(t)}</div></div>
+            <div><div class="my-entry-label">Slip</div><div class="my-entry-value">${renderStoredFiles_(t)}</div></div>
+            <div><div class="my-entry-label">Requested</div><div class="my-entry-value">${money(t.AmountRequested)}</div></div>
+            <div><div class="my-entry-label">Final</div><div class="my-entry-value">${t.AmountFinal===''||t.AmountFinal==null?'-':money(t.AmountFinal)}</div></div>
+            <div><div class="my-entry-label">Status</div><div class="my-entry-value">${renderStatusPill(t)}</div></div>
+          </div>
+          ${completeCell !== '-' ? `<div class="my-entry-complete">${completeCell}</div>` : ''}
+        </div>`;
+      }).join('')}</div>`;
+    }
+
+    function renderDashboard(){
+      const el=document.getElementById('screen-dashboard');
+      if(isAdmin()){
+        const people = state.users.filter(u => (u.Role || u.role) === 'user');
+        const cards = people.map(u => {
+          const userId = u.UserID || u.userId;
+          const name = u.FullName || u.fullName;
+          const totals = calculateTotals(userId);
+          return `<button type="button" class="admin-balance-card admin-user-card" data-user-id="${userId}">
+            <div class="admin-balance-name">${escapeHtml(name)}</div>
+            <div>
+              <div class="admin-balance-label">Balance</div>
+              <div class="admin-balance-amount ${totals.balance>=0?'success':'danger'}">${money(totals.balance)}</div>
+            </div>
+            <div class="admin-balance-grid">
+              <div><div class="admin-balance-label">Pending</div><div class="admin-balance-value">${money(totals.pending)}</div></div>
+              <div><div class="admin-balance-label">Allocated</div><div class="admin-balance-value">${money(totals.notCompleted)}</div></div>
+              <div><div class="admin-balance-label">Used</div><div class="admin-balance-value">${money(totals.spent)}</div></div>
+            </div>
+          </button>`;
+        }).join('');
+        const totalSpent = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='completed_paid') ? Number(t.AmountFinal || 0) : 0), 0);
+        const totalPending = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='pending') ? Number(t.AmountRequested || 0) : 0), 0);
+        const totalNotCompleted = state.transactions.reduce((a,t)=>a + ((t.EntryType==='debit' && t.Status==='approved_request') ? Number(t.AmountRequested || 0) : 0), 0);
+        el.innerHTML = `<div class="grid grid-3"><div class="card stat"><div class="small">Completed Spend</div><div class="value danger">${money(totalSpent)}</div></div><div class="card stat"><div class="small">Pending Requests</div><div class="value">${money(totalPending)}</div></div><div class="card stat"><div class="small">Not Completed</div><div class="value">${money(totalNotCompleted)}</div></div></div><div class="card"><h3 class="section-title">User Balances</h3><div class="small muted" style="margin-bottom:10px;">Click a user to load only that user's transactions.</div><div class="grid grid-3">${cards || '<div class="muted">No users</div>'}</div></div>`;
+        bindAdminUserCards();
+      } else {
+        const userId = state.user.userId || state.user.UserID;
+        const totals = calculateTotals(userId);
+        const own = sortTransactionsNewestFirst(state.transactions.filter(t => t.UserID === userId)).slice(0,5);
+        const recentDesktop = own.length ? `<div class="recent-entries-table-wrap">${renderTransactionTable(own,false,true)}</div>` : '<div class="muted">No entries found.</div>';
+        const recentMobile = renderRecentEntriesCards(own,false,true);
+        el.innerHTML = `<div class="grid grid-4"><div class="card stat"><div class="small">Current Balance</div><div class="value ${totals.balance>=0?'success':'danger'}">${money(totals.balance)}</div></div><div class="card stat"><div class="small">Pending Requests</div><div class="value">${money(totals.pending)}</div></div><div class="card stat"><div class="small">Allocated Not Completed</div><div class="value">${money(totals.notCompleted)}</div></div><div class="card stat"><div class="small">Used</div><div class="value danger">${money(totals.spent)}</div></div></div><div class="card"><h3 class="section-title">Recent Entries</h3>${recentDesktop}${recentMobile}</div>`;
+      }
+    }
+
+    function getRequestDraft_(){
+      const current = state.requestDraft && typeof state.requestDraft === 'object' ? state.requestDraft : {};
+      return {
+        requestDate: current.requestDate || todayISO(),
+        requestAmount: current.requestAmount || '',
+        requestUserId: current.requestUserId || '',
+        requestCategory: current.requestCategory || (state.categories[0] || 'other'),
+        requestSupplier: current.requestSupplier || '',
+        requestPaymentType: current.requestPaymentType || 'CASH',
+        requestReference: current.requestReference || '',
+        requestRemark: current.requestRemark || ''
+      };
+    }
+
+    function captureRequestDraft_(){
+      state.requestDraft = {
+        requestDate: (document.getElementById('requestDate') || {}).value || todayISO(),
+        requestAmount: (document.getElementById('requestAmount') || {}).value || '',
+        requestUserId: (document.getElementById('requestUserId') || {}).value || '',
+        requestCategory: (document.getElementById('requestCategory') || {}).value || (state.categories[0] || 'other'),
+        requestSupplier: (document.getElementById('requestSupplier') || {}).value || '',
+        requestPaymentType: (document.getElementById('requestPaymentType') || {}).value || 'CASH',
+        requestReference: (document.getElementById('requestReference') || {}).value || '',
+        requestRemark: (document.getElementById('requestRemark') || {}).value || ''
+      };
+    }
+
+    function renderAddRequest(){
+      const el=document.getElementById('screen-add-request');
+      const draft = getRequestDraft_();
+      const opts=state.categories.map(c=>`<option value="${escapeHtml(c)}" ${draft.requestCategory===c?'selected':''}>${escapeHtml(titleCase(c))}</option>`).join('');
+      const users = state.users.filter(u => (u.Role || u.role) === 'user');
+      const userSelect=isAdmin()?`<label><div class="small muted">User</div><select id="requestUserId">${users.map(u=>`<option value="${u.UserID || u.userId}" ${draft.requestUserId===(u.UserID || u.userId)?'selected':''}>${escapeHtml(u.FullName || u.fullName)}</option>`).join('')}</select></label>`:'';
+      const pendingRequestFiles = normalizeAttachmentList_(state.pendingRequestFiles || state.pendingRequestFile || []);
+      const requestFileHtml = pendingRequestFiles.length
+        ? `<div class="stack"><div class="small muted">Attached (${pendingRequestFiles.length}): ${escapeHtml(attachmentNamesText_(pendingRequestFiles))}</div><div class="actions"><button id="attachRequestFileBtn" type="button" class="secondary">Add More Files</button><button id="removeRequestAttachmentBtn" type="button" class="danger-btn">Remove All Files</button></div></div>`
+        : `<div class="actions"><button id="attachRequestFileBtn" type="button" class="secondary">Attach File(s)</button></div>`;
+      el.innerHTML=`<div class="card stack"><div><h2>Add Expense Request</h2><div class="muted">Request first. Cash and EFT need admin paid confirmation after approval. Card stays on the normal completion flow.</div></div><div class="row"><label><div class="small muted">Request Date</div><input id="requestDate" type="date" value="${escapeHtml(draft.requestDate)}" /></label><label><div class="small muted">Requested Amount</div><input id="requestAmount" type="number" min="0" step="0.01" placeholder="0.00" value="${escapeHtml(draft.requestAmount)}" /></label></div>${userSelect}<div class="row"><label><div class="small muted">Category</div><select id="requestCategory">${opts}</select></label><label><div class="small muted">Supplier / Vendor</div><input id="requestSupplier" placeholder="Supplier name" value="${escapeHtml(draft.requestSupplier)}" /></label></div><div class="row"><label><div class="small muted">Payment Type</div><select id="requestPaymentType"><option value="CASH" ${draft.requestPaymentType==='CASH'?'selected':''}>CASH</option><option value="EFT" ${draft.requestPaymentType==='EFT'?'selected':''}>EFT</option><option value="CARD" ${draft.requestPaymentType==='CARD'?'selected':''}>CARD</option></select></label><label><div class="small muted">Reference Number</div><input id="requestReference" placeholder="Optional reference" value="${escapeHtml(draft.requestReference)}" /></label></div><div class="row"><label><div class="small muted">Remark</div><input id="requestRemark" placeholder="Reason for the request" value="${escapeHtml(draft.requestRemark)}" /></label></div><div class="stack"><div class="small muted">Attachment (optional)</div>${requestFileHtml}</div><div class="actions"><button id="saveRequestBtn" type="button">Save Request</button></div></div>`;
+      const attachBtn = document.getElementById('attachRequestFileBtn');
+      const removeBtn = document.getElementById('removeRequestAttachmentBtn');
+      if (attachBtn) attachBtn.addEventListener('click', pickRequestAttachment);
+      if (removeBtn) removeBtn.addEventListener('click', removeRequestAttachment);
+      document.getElementById('saveRequestBtn').addEventListener('click', saveRequest);
+    }
+    function clearRequestForm(){
+      const dateEl = document.getElementById('requestDate');
+      const amountEl = document.getElementById('requestAmount');
+      const categoryEl = document.getElementById('requestCategory');
+      const supplierEl = document.getElementById('requestSupplier');
+      const paymentTypeEl = document.getElementById('requestPaymentType');
+      const referenceEl = document.getElementById('requestReference');
+      const remarkEl = document.getElementById('requestRemark');
+      if (dateEl) dateEl.value = todayISO();
+      if (amountEl) amountEl.value = '';
+      if (categoryEl && categoryEl.options.length) categoryEl.selectedIndex = 0;
+      if (supplierEl) supplierEl.value = '';
+      if (paymentTypeEl) paymentTypeEl.value = 'CASH';
+      if (referenceEl) referenceEl.value = '';
+      if (remarkEl) remarkEl.value = '';
+      state.pendingRequestFiles = [];
+      state.pendingRequestFile = null;
+      state.requestDraft = null;
+    }
+
+    function setActionButtonsDisabled(id, disabled){
+      document.querySelectorAll(`[data-id="${id}"]`).forEach(btn => {
+        btn.disabled = !!disabled;
+        if (disabled) {
+          btn.dataset.prevText = btn.textContent;
+          btn.textContent = 'Please wait...';
+        } else if (btn.dataset.prevText) {
+          btn.textContent = btn.dataset.prevText;
+          delete btn.dataset.prevText;
+        }
+      });
+    }
+
+    async function saveRequest(){
+      const saveBtn = document.getElementById('saveRequestBtn');
+      try{
+        captureRequestDraft_();
+        if (saveBtn){ saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
+        const userId = isAdmin() ? document.getElementById('requestUserId').value : (state.user.userId || state.user.UserID);
+        const requestDate = document.getElementById('requestDate').value;
+        const amountRequested = Number(document.getElementById('requestAmount').value || 0);
+        const category = document.getElementById('requestCategory').value;
+        const supplier = document.getElementById('requestSupplier').value.trim();
+        const paymentType = normalizePaymentMethod_(document.getElementById('requestPaymentType').value || 'CASH');
+        const referenceNumber = document.getElementById('requestReference').value.trim();
+        const remark = document.getElementById('requestRemark').value.trim();
+        const requestAttachments = normalizeAttachmentList_(state.pendingRequestFiles || state.pendingRequestFile || []);
+        const userObj = state.users.find(u => (u.UserID || u.userId) === userId) || state.user;
+        if(!requestDate) throw new Error('Date is required.');
+        validateDateAgainstSettings(requestDate);
+        if(!(amountRequested > 0)) throw new Error('Requested amount must be greater than zero.');
+        if(!remark) throw new Error('Remark is required.');
+        const entry = {
+          transactionId: generateLocalId('TRX'),
+          userId,
+          userName:userObj.FullName || userObj.fullName,
+          requestDate,
+          finalDate:'',
+          requestTime:currentSATime(),
+          entryType:'debit',
+          amountRequested,
+          amountFinal:'',
+          category,
+          supplier,
+          remark,
+          paymentMethod: paymentType,
+          referenceNumber,
+          files: requestAttachments.map(function(file){ return { fileName: file.name, fileMimeType: file.mimeType, fileDataBase64: file.base64 }; }),
+          fileName: joinAttachmentField_(requestAttachments, 'name'),
+          fileRef:'',
+          fileLink:'',
+          fileMimeType: '',
+          fileDataBase64: '',
+          uploadDay: requestDate,
+          uploadMonth: String(requestDate || '').slice(0, 7),
+          uploadUserName: userObj.FullName || userObj.fullName || '',
+          uploadType: 'request',
+          status:isAdmin() ? 'approved_request' : 'pending',
+          createdBy:state.user.username || state.user.Username || '',
+          createdAt:nowSAIso(),
+          approvedBy:isAdmin() ? (state.user.username || state.user.Username || '') : '',
+          isBackdated:requestDate < todayISO()
+        };
+        setBanner(canReachServer() ? 'Saving request...' : 'Offline. Request saved to queue.', canReachServer() ? 'info' : 'ok');
+        try {
+          await apiCall('syncEntries', { entries: [entry] });
+          await refreshTransactionsOnly();
+          setBanner('Expense request saved. You can add a new entry now.','ok');
+        } catch(err){
+          applyLocalRequestTransaction(entry);
+          enqueueOperation('syncEntries', { entries: [entry] }, { type: 'request' });
+          setBanner('No signal. Request saved on this device and queued for next sync.','ok');
+        }
+        clearRequestForm();
+        renderDashboard();
+        renderMyEntries();
+        renderAddRequest();
+        if (isAdmin()) renderTransactions();
+        showScreen('add-request');
+        alert('Entry saved.');
+      } catch(err){
+        setBanner(err.message,'error');
+      } finally {
+        if (saveBtn){ saveBtn.disabled = false; saveBtn.textContent = 'Save Request'; }
+        saveLocal();
+        updateSyncState();
+      }
+    }
+
+    function renderMyEntries(){
+      const el=document.getElementById('screen-my-entries');
+      const userId = state.user.userId || state.user.UserID;
+      const own = sortTransactionsNewestFirst(state.transactions.filter(t => t.UserID === userId));
+      const desktopTable = own.length ? `<div class="my-entries-table-wrap">${renderTransactionTable(own,false,true)}</div>` : '<div class="muted">No entries found.</div>';
+      const mobileCards = renderMyEntriesCards(own);
+      el.innerHTML=`<div class="card"><h2 class="section-title">My Entries</h2>${desktopTable}${mobileCards}</div>`;
+      bindSlipUploadButtons(); bindPaidStepButtons(); bindCompleteButtons();
+    }
+
+    function bindAdminUserCards(){
+      document.querySelectorAll('.admin-user-card').forEach(btn=>btn.addEventListener('click', () => {
+        state.selectedAdminUserId = btn.dataset.userId || 'all';
+        renderTransactions();
+        showScreen('transactions');
+        setBanner('Showing transactions for selected user.','ok');
+      }));
+    }
+
+    function excelSafe_(value){
+      const raw = String(value == null ? '' : value);
+      return raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function plainStatusLabel_(status){
+      const value = String(status || '').trim();
+      if (value === 'approved_request') return 'Approved Request';
+      if (value === 'completed_paid') return 'Completed Paid';
+      if (value === 'completed') return 'Completed / Admin Load';
+      if (value === 'paid') return 'Paid / Proof Verified';
+      return titleCase(value || '');
+    }
+    function getAdminFilteredTransactions_(){
+      let items = sortTransactionsNewestFirst(state.transactions);
+      const statusEl = document.getElementById('transactionStatusFilter');
+      const userEl = document.getElementById('transactionUserFilter');
+      const typeEl = document.getElementById('transactionTypeFilter');
+      const paymentEl = document.getElementById('transactionPaymentFilter');
+      const fromEl = document.getElementById('transactionDateFrom');
+      const toEl = document.getElementById('transactionDateTo');
+      const searchEl = document.getElementById('transactionSearchFilter');
+      const status = statusEl ? statusEl.value : 'all';
+      const user = userEl ? userEl.value : 'all';
+      const type = typeEl ? typeEl.value : 'all';
+      const payment = paymentEl ? paymentEl.value : 'all';
+      const dateFrom = fromEl ? String(fromEl.value || '') : '';
+      const dateTo = toEl ? String(toEl.value || '') : '';
+      const search = searchEl ? String(searchEl.value || '').trim().toLowerCase() : '';
+      if(status==='backdated') items=items.filter(t=>String(t.IsBackdated || '').toLowerCase()==='yes');
+      else if(status!=='all') items=items.filter(t=>String(t.Status || '')===status);
+      if(user!=='all') items=items.filter(t=>String(t.UserID || '')===user);
+      if(type!=='all') items=items.filter(t=>String(t.EntryType || '')===type);
+      if(payment!=='all') items=items.filter(t=>getPaymentMethod_(t)===payment);
+      if(dateFrom) items=items.filter(t=>String(t.FinalDate || t.RequestDate || '') >= dateFrom);
+      if(dateTo) items=items.filter(t=>String(t.FinalDate || t.RequestDate || '') <= dateTo);
+      if(search){
+        items=items.filter(t=>[
+          t.TransactionID, t.UserName, t.Category, t.Supplier, t.Remark, t.PaymentMethod,
+          t.ReferenceNumber, t.Status, t.EntryType, t.ApprovedBy
+        ].some(v=>String(v || '').toLowerCase().includes(search)));
+      }
+      return items;
+    }
+    function exportAdminTransactionsToExcel_(items){
+      if(!isAdmin()) return;
+      const exportItems = (items && items.length ? items : getAdminFilteredTransactions_());
+      const rows = exportItems.map(t => ({
+        'Transaction ID': t.TransactionID || '',
+        'User ID': t.UserID || '',
+        'User Name': t.UserName || '',
+        'Request Date': formatSADateOnly(t.RequestDate || ''),
+        'Final Date': formatSADateOnly(t.FinalDate || ''),
+        'Request Time (SA)': normalizeTimeValue(t.RequestTime || ''),
+        'Type': titleCase(t.EntryType || ''),
+        'Payment Method': getPaymentMethod_(t),
+        'Flow Status': plainStatusLabel_(t.Status || ''),
+        'Amount Requested': Number(t.AmountRequested || 0),
+        'Amount Final': t.AmountFinal===''||t.AmountFinal==null?'':Number(t.AmountFinal || 0),
+        'Category': titleCase(t.Category || ''),
+        'Supplier': t.Supplier || '',
+        'Reference Number': getDisplayReferenceNumber_(t) || '',
+        'Remark': t.Remark || '',
+        'Approved By': t.ApprovedBy || '',
+        'Created At (SA)': formatSADateTimeValue_(t.CreatedAt || ''),
+        'Updated At (SA)': formatSADateTimeValue_(t.UpdatedAt || ''),
+        'Slip File': t.FileName || '',
+        'Slip Link': t.FileLink || '',
+        'Backdated': String(t.IsBackdated || '').toLowerCase()==='yes' ? 'Yes' : 'No'
+      }));
+      if(!rows.length){ setBanner('No transactions to export.', 'error'); return; }
+
+      const totalRequested = rows.reduce((sum, r)=>sum + Number(r['Amount Requested'] || 0), 0);
+      const totalFinal = rows.reduce((sum, r)=>sum + Number(r['Amount Final'] || 0), 0);
+      const headers = Object.keys(rows[0]);
+      const generated = formatSADateTimeValue_(nowSAIso());
+      const filterSummary = [
+        'Status: ' + ((document.getElementById('transactionStatusFilter') || {}).value || 'all'),
+        'User: ' + ((document.getElementById('transactionUserFilter') || {}).value || 'all'),
+        'Type: ' + ((document.getElementById('transactionTypeFilter') || {}).value || 'all'),
+        'Payment: ' + ((document.getElementById('transactionPaymentFilter') || {}).value || 'all')
+      ].join(' | ');
+
+      const colGroup = headers.map(h => {
+        const wide = /Remark|Slip Link|Slip File|Supplier|User Name/i.test(h) ? 180 : (/Transaction ID|Created|Updated|Reference/i.test(h) ? 140 : 95);
+        return '<col style="width:' + wide + 'px">';
+      }).join('');
+
+      const bodyRows = rows.map(r => '<tr>' + headers.map(h => {
+        if (/Amount/.test(h)) return excelCell_(r[h], 'money');
+        if (/Date|Time|Created|Updated/.test(h)) return excelCell_(r[h], 'date');
+        if (/Slip Link/.test(h) && r[h]) return '<td class="link"><a href="' + excelSafe_(r[h]) + '">' + excelSafe_(r[h]) + '</a></td>';
+        return excelCell_(r[h], 'text');
+      }).join('') + '</tr>').join('');
+
+      const html = `<!doctype html><html><head><meta charset="utf-8"><style>
+        body{font-family:Arial,Helvetica,sans-serif;color:#111827;}
+        table{border-collapse:collapse;width:100%;}
+        .title{font-size:20px;font-weight:700;background:#14532d;color:white;text-align:left;}
+        .sub{font-size:12px;background:#eef6ee;color:#1f2937;text-align:left;}
+        th{background:#166534;color:white;font-weight:700;border:1px solid #d1d5db;padding:8px;text-align:left;white-space:nowrap;}
+        td{border:1px solid #d1d5db;padding:6px;vertical-align:top;font-size:12px;}
+        .money{mso-number-format:'R #,##0.00';text-align:right;}
+        .date{mso-number-format:'@';white-space:nowrap;}
+        .text{mso-number-format:'@';}
+        .link{mso-number-format:'@';color:#1155cc;}
+        .summary-label{font-weight:700;background:#f3f4f6;}
+        .summary-value{font-weight:700;text-align:right;mso-number-format:'R #,##0.00';}
+      </style></head><body>
+      <table>
+        <colgroup>${colGroup}</colgroup>
+        <tr><td class="title" colspan="${headers.length}">EarthLabs Petty Cash - Admin Export</td></tr>
+        <tr><td class="sub" colspan="${headers.length}">Generated: ${excelSafe_(generated)} SA time | Records: ${rows.length} | ${excelSafe_(filterSummary)}</td></tr>
+        <tr><td class="summary-label" colspan="2">Total Requested</td><td class="summary-value">${totalRequested.toFixed(2)}</td><td class="summary-label" colspan="2">Total Final</td><td class="summary-value">${totalFinal.toFixed(2)}</td><td colspan="${Math.max(headers.length-6,1)}"></td></tr>
+        <tr>${headers.map(h=>'<th>'+excelSafe_(h)+'</th>').join('')}</tr>
+        ${bodyRows}
+      </table></body></html>`;
+      const blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const a = document.createElement('a');
+      const stamp = new Intl.DateTimeFormat('en-ZA', { timeZone: SA_TIMEZONE, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false }).format(new Date()).replace(/[\/:,\s]+/g,'-');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'petty-cash-admin-export-SA-' + stamp + '.xls';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      setBanner('Exported ' + rows.length + ' transaction(s) to Excel.', 'ok');
+    }
+
+    function renderTransactions(){
+      const el=document.getElementById('screen-transactions');
+      if(!isAdmin()){ el.innerHTML=''; return; }
+      const userOptions=['<option value="all">All Users</option>'].concat(
+        state.users.filter(u => (u.Role || u.role)==='user').map(u=>`<option value="${u.UserID || u.userId}" ${(state.selectedAdminUserId === (u.UserID || u.userId)) ? 'selected' : ''}>${escapeHtml(u.FullName || u.fullName)}</option>`)
+      ).join('');
+      el.innerHTML=`<div class="card stack"><div class="row-3"><label><div class="small muted">Status / Flow</div><select id="transactionStatusFilter"><option value="all">All Flow Statuses</option><option value="pending">Pending Approval</option><option value="approved_request">Approved - Waiting Paid Step/Card Completion</option><option value="paid">Paid / Proof Verified</option><option value="completed_paid">Completed Paid</option><option value="completed">Admin Load / Completed Credit</option><option value="rejected">Rejected</option><option value="backdated">Backdated Only</option></select></label><label><div class="small muted">User Slicer</div><select id="transactionUserFilter">${userOptions}</select></label><label><div class="small muted">Transaction Type</div><select id="transactionTypeFilter"><option value="all">All Types</option><option value="credit">Credits / Loaded Money</option><option value="debit">Expense Requests</option></select></label></div><div class="row-3"><label><div class="small muted">Payment Method</div><select id="transactionPaymentFilter"><option value="all">All Methods</option><option value="CASH">Cash</option><option value="EFT">EFT</option><option value="CARD">Card</option></select></label><label><div class="small muted">Date From</div><input id="transactionDateFrom" type="date" /></label><label><div class="small muted">Date To</div><input id="transactionDateTo" type="date" /></label></div><div class="row"><label><div class="small muted">Search</div><input id="transactionSearchFilter" placeholder="Search user, supplier, ref, remark, status..." /></label><div class="actions"><button id="exportAdminExcelBtn" type="button">Export Excel</button><button id="clearAdminFiltersBtn" class="secondary" type="button">Clear Filters</button></div></div><div id="transactionsTableWrap"></div></div>`;
+      const statusEl=document.getElementById('transactionStatusFilter');
+      const userEl=document.getElementById('transactionUserFilter');
+      const typeEl=document.getElementById('transactionTypeFilter');
+      const paymentEl=document.getElementById('transactionPaymentFilter');
+      const fromEl=document.getElementById('transactionDateFrom');
+      const toEl=document.getElementById('transactionDateTo');
+      const searchEl=document.getElementById('transactionSearchFilter');
+      const exportBtn=document.getElementById('exportAdminExcelBtn');
+      const clearBtn=document.getElementById('clearAdminFiltersBtn');
+      const renderFiltered=()=>{
+        const items=getAdminFilteredTransactions_();
+        const user=userEl.value;
+        let summaryHtml = '';
+        if (user !== 'all') {
+          const selectedUser = state.users.find(u => (u.UserID || u.userId) === user);
+          const totals = calculateTotals(user);
+          summaryHtml = `<div class="tx-summary-grid"><div class="card stat"><div class="small">User</div><div class="value" style="font-size:18px;">${escapeHtml((selectedUser && (selectedUser.FullName || selectedUser.fullName)) || user)}</div></div><div class="card stat"><div class="small">Balance</div><div class="value ${totals.balance>=0?'success':'danger'}">${money(totals.balance)}</div></div><div class="card stat"><div class="small">Total Used</div><div class="value danger">${money(totals.spent)}</div></div><div class="card stat"><div class="small">Pending Requests</div><div class="value">${money(totals.pending)}</div></div><div class="card stat"><div class="small">Not Completed</div><div class="value">${money(totals.notCompleted)}</div></div></div>`;
+        }
+        document.getElementById('transactionsTableWrap').innerHTML=`${summaryHtml}<h2 class="section-title">All Transactions</h2><div class="recent-entries-table-wrap">${renderTransactionTable(items,true,true)}</div>${renderAdminTransactionsCards(items)}`;
+        bindAdminButtons();
+        bindSlipUploadButtons(); bindPaidStepButtons(); bindCompleteButtons();
+      };
+      statusEl.addEventListener('change',renderFiltered);
+      userEl.addEventListener('change',()=>{ state.selectedAdminUserId = userEl.value; renderFiltered(); });
+      typeEl.addEventListener('change',renderFiltered);
+      paymentEl.addEventListener('change',renderFiltered);
+      fromEl.addEventListener('change',renderFiltered);
+      toEl.addEventListener('change',renderFiltered);
+      searchEl.addEventListener('input',renderFiltered);
+      exportBtn.addEventListener('click',()=>exportAdminTransactionsToExcel_(getAdminFilteredTransactions_()));
+      clearBtn.addEventListener('click',()=>{ statusEl.value='all'; userEl.value='all'; typeEl.value='all'; paymentEl.value='all'; fromEl.value=''; toEl.value=''; searchEl.value=''; state.selectedAdminUserId='all'; renderTransactions(); });
+      renderFiltered();
+    }
+
+    function renderUsers(){
+      const el=document.getElementById('screen-users');
+      if(!isAdmin()){ el.innerHTML=''; return; }
+      const rows = state.users.map(u => {
+        const id=u.UserID||u.userId;
+        const totals=calculateTotals(id);
+        return `<tr><td>${escapeHtml(u.FullName || u.fullName)}</td><td>${escapeHtml(u.Username || u.username)}</td><td>${escapeHtml(u.Role || u.role)}</td><td>${escapeHtml(u.Status || u.status)}</td><td class="right">${(u.Role || u.role)==='user'?money(totals.balance):'-'}</td></tr>`;
+      }).join('');
+      el.innerHTML=`<div class="card"><h2 class="section-title">Users</h2><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th class="right">Balance</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+
+    function renderMessage(){
+      const el=document.getElementById('screen-message');
+      if(!el) return;
+      if(!isAdmin()){ el.innerHTML=''; return; }
+      const users = (state.users || []).filter(u => String(u.Role || u.role || '') === 'user' && String(u.Status || u.status || '').toLowerCase() === 'active');
+      const options = users.map(u => {
+        const id = u.UserID || u.userId || '';
+        const name = u.FullName || u.fullName || u.Username || u.username || id;
+        return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
+      }).join('');
+      el.innerHTML=`<div class="card stack"><div><h2>Message</h2><div class="muted">Admin custom Firebase push notification. Users must have enabled push on their device.</div></div><div class="row"><label><div class="small muted">Send To</div><select id="customPushTarget"><option value="all_users">All active users</option><option value="single_user">One user</option><option value="admins">Admins</option></select></label><label id="customPushUserWrap" class="hidden"><div class="small muted">User</div><select id="customPushUser">${options}</select></label></div><label><div class="small muted">Notification Title</div><input id="customPushTitle" maxlength="80" value="Petty cash message" /></label><label><div class="small muted">Message</div><textarea id="customPushBody" maxlength="500" placeholder="Type the message the user must receive..."></textarea></label><div class="small muted">This sends through the same Firebase push path already used when transactions are approved. It does not change any transaction status.</div><div class="actions"><button id="sendCustomPushBtn" type="button">Send Push Message</button></div></div>`;
+      const target = document.getElementById('customPushTarget');
+      const userWrap = document.getElementById('customPushUserWrap');
+      if (target && userWrap) target.onchange = function(){ userWrap.classList.toggle('hidden', target.value !== 'single_user'); };
+      const sendBtn = document.getElementById('sendCustomPushBtn');
+      if (sendBtn) sendBtn.addEventListener('click', sendCustomPushMessage);
+    }
+    async function sendCustomPushMessage(){
+      const btn = document.getElementById('sendCustomPushBtn');
+      const target = document.getElementById('customPushTarget').value;
+      const title = document.getElementById('customPushTitle').value.trim();
+      const message = document.getElementById('customPushBody').value.trim();
+      const userId = document.getElementById('customPushUser') ? document.getElementById('customPushUser').value : '';
+      if (!message) { setBanner('Type a message before sending.', 'error'); return; }
+      try {
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+        const result = await apiCall('sendCustomPushMessage', { target, userId, title, message });
+        document.getElementById('customPushBody').value = '';
+        setBanner(result.message || 'Push message sent.', 'ok');
+      } catch(err) { setBanner(err.message || String(err), 'error'); }
+      finally { if (btn) { btn.disabled = false; btn.textContent = 'Send Push Message'; } }
+    }
+
+    function renderSettings(){
+      const el=document.getElementById('screen-settings');
+      if(!isAdmin()){ el.innerHTML=''; return; }
+      el.innerHTML=`<div class="card stack"><div><h2>Settings</h2><div class="muted">Admin only settings stored in Google Sheets.</div></div><label><div class="small muted">Apps Script URL</div><input id="settingsApiUrl" value="${escapeHtml(HARDCODED_API_URL)}" readonly /></label><div class="row"><label><div class="small muted">Currency</div><select id="currencySelect"><option value="ZAR" ${state.settings.currency==='ZAR'?'selected':''}>ZAR</option><option value="USD" ${state.settings.currency==='USD'?'selected':''}>USD</option></select></label><label><div class="small muted">Allow Backdating</div><select id="backdateSelect"><option value="yes" ${String(state.settings.allowBackdate)==='yes'?'selected':''}>Yes</option><option value="no" ${String(state.settings.allowBackdate)!=='yes'?'selected':''}>No</option></select></label></div><div class="row"><label><div class="small muted">Max Backdate Days</div><input id="maxBackdateDays" type="number" min="0" step="1" value="${Number(state.settings.maxBackdateDays || 0)}" /></label></div><div class="actions"><button id="saveSettingsBtn" type="button">Save Settings</button></div></div>`;
+      document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+    }
+    async function saveSettings(){
+      const btn = document.getElementById('saveSettingsBtn');
+      try {
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = 'Saving...';
+        }
+        state.apiUrl = document.getElementById('settingsApiUrl').value.trim();
+        if(!state.apiUrl) state.apiUrl = HARDCODED_API_URL;
+        saveLocal();
+        const result = await apiCall('saveSettings', {
+          allowBackdate: document.getElementById('backdateSelect').value,
+          maxBackdateDays: document.getElementById('maxBackdateDays').value,
+          currency: document.getElementById('currencySelect').value
+        });
+        state.settings = result.settings || state.settings;
+        saveLocal();
+        renderDashboard();
+        renderAddRequest();
+        if (typeof renderLoadMoney === 'function')
+        renderSettings();
+        showScreen('settings');
+        setBanner('Settings saved and applied.', 'ok');
+      } catch(err) {
+        setBanner(err.message, 'error');
+      } finally {
+        const saveBtn = document.getElementById('saveSettingsBtn');
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save Settings';
+        }
+      }
+    }
+
+    function renderSlipCell(t){
+      return renderStoredFiles_(t);
+    }
+
+    function renderStatusPill(t){
+      const map={ pending:['#fef3c7','#92400e','Pending'], approved_request:['#dbeafe','#1d4ed8','Approved Request'], paid:['#ede9fe','#6d28d9','Paid'], completed_paid:['#ecfdf5','#166534','Completed Paid'], rejected:['#fee2e2','#991b1b','Rejected'] };
+      const item=map[t.Status];
+      if(!item) return '-';
+      return `<span class="pill" style="background:${item[0]};color:${item[1]};">${item[2]}</span>`;
+    }
+    function renderFlags(t){ return String(t.IsBackdated || '').toLowerCase()==='yes' ? '<span class="pill" style="background:#fff7ed;color:#c2410c;">Backdated</span>' : '-'; }
+    function needsAdminPaidStep(t){
+      const paymentMethod = getPaymentMethod_(t);
+      return t && t.EntryType==='debit' && t.Status==='approved_request' && (paymentMethod==='CASH' || paymentMethod==='EFT');
+    }
+    function canUserCompleteTransaction(t){
+      if (!t || t.EntryType!=='debit') return false;
+      const paymentMethod = getPaymentMethod_(t);
+      if (paymentMethod==='CARD') return t.Status==='approved_request';
+      return t.Status==='paid';
+    }
+    function paymentPendingKeyFor(id){ return `PAY:${id}`; }
+    function renderAdminActionCell(t){
+      if(!isAdmin()) return '-';
+      if(t.EntryType==='debit' && t.Status==='pending') return `<div class="actions"><button type="button" class="success-btn approve-request-btn" data-id="${t.TransactionID}">Approve Request</button><button type="button" class="danger-btn reject-btn" data-id="${t.TransactionID}">Reject</button></div>`;
+      if(needsAdminPaidStep(t)){
+        const paymentMethod = getPaymentMethod_(t);
+        const pending = normalizeAttachmentList_(state.pendingPaymentFiles[paymentPendingKeyFor(t.TransactionID)]);
+        if(paymentMethod==='EFT'){
+          if(!pending.length){
+            return `<div class="stack"><div class="small muted">Approved. Upload proof and mark paid.</div><button type="button" class="secondary upload-payment-proof-btn" data-id="${t.TransactionID}">Upload Proof</button></div>`;
+          }
+          return `<div class="stack"><div class="small muted">Proof attached (${pending.length}): ${escapeHtml(attachmentNamesText_(pending))}</div><div class="actions"><button type="button" class="secondary upload-payment-proof-btn" data-id="${t.TransactionID}">Add More</button><button type="button" class="danger-btn remove-payment-proof-btn" data-id="${t.TransactionID}">Remove</button></div><button type="button" class="success-btn mark-paid-btn" data-id="${t.TransactionID}">Verify & Mark Paid</button></div>`;
+        }
+        return `<div class="stack"><div class="small muted">Approved. Confirm cash was paid to user.</div><button type="button" class="success-btn mark-paid-btn" data-id="${t.TransactionID}">Mark Cash Paid</button></div>`;
+      }
+      if(t.EntryType==='debit' && t.Status==='approved_request') return '<span class="small muted">Waiting for user completion</span>';
+      if(t.EntryType==='debit' && t.Status==='paid') return '<span class="small muted">Waiting for user completion</span>';
+      return '-';
+    }
+    function renderCompleteCell(t){
+      if(!t || t.EntryType!=='debit') return '-';
+      if(!isAdmin() && t.UserID !== (state.user.userId || state.user.UserID)) return '-';
+
+      const paymentMethod = getPaymentMethod_(t);
+      const canCompleteNow = canUserCompleteTransaction(t);
+      const canAttachNow = t.Status === 'approved_request' || t.Status === 'paid';
+      if(!canAttachNow) return '-';
+
+      const pending = normalizeAttachmentList_(state.pendingFiles[t.TransactionID]);
+      const waitingPaidStep = !canCompleteNow && t.Status === 'approved_request' && (paymentMethod === 'CASH' || paymentMethod === 'EFT');
+      const waitingText = waitingPaidStep
+        ? 'Slip can be attached now. Completion unlocks after admin marks the cash/EFT as paid.'
+        : 'Attach one or more files before completing.';
+
+      if(!pending.length){
+        return `<div class="stack"><button type="button" class="secondary upload-slip-btn" data-id="${t.TransactionID}">Attach Slip(s)</button><div class="small muted">${waitingText}</div></div>`;
+      }
+
+      const fileControls = `<div class="small muted">Attached (${pending.length}): ${escapeHtml(attachmentNamesText_(pending))}</div><div class="actions"><button type="button" class="secondary replace-slip-btn" data-id="${t.TransactionID}">Add More Files</button><button type="button" class="danger-btn remove-slip-btn" data-id="${t.TransactionID}">Remove Files</button></div>`;
+      if(!canCompleteNow){
+        return `<div class="stack">${fileControls}<div class="small muted">Waiting for admin to mark ${escapeHtml(paymentMethod)} as paid before final completion.</div></div>`;
+      }
+      return `<div class="stack">${fileControls}<button type="button" class="complete-btn" data-id="${t.TransactionID}">Complete Transaction</button></div>`;
+    }
+
+    function renderTransactionTable(items,showUser,showComplete){
+      items = sortTransactionsNewestFirst(items);
+      if(!items.length) return '<div class="muted">No entries found.</div>';
+      return `<div style="overflow:auto;"><table><thead><tr><th>Date</th>${showUser?'<th>User</th>':''}<th>Type</th><th>Category</th><th>Remark</th><th>Requested</th><th>Final</th><th>Status</th><th>Flags</th><th>Slip</th>${isAdmin()?'<th>Admin Action</th>':''}${showComplete?'<th>Complete</th>':''}</tr></thead><tbody>${items.map(t=>{
+        const txDate = formatSADateOnly(t.FinalDate || t.RequestDate || '');
+        const txTime = normalizeTimeValue(t.RequestTime || '');
+        const txMain = [txDate, txTime].filter(Boolean).join(' ');
+        return `<tr data-transaction-id="${escapeHtml(t.TransactionID || '')}"><td class="nowrap">${escapeHtml(txMain)}</td>${showUser?`<td>${escapeHtml(t.UserName || '')}</td>`:''}<td><span class="entry-type ${t.EntryType}">${escapeHtml(t.EntryType)}</span></td><td>${escapeHtml(titleCase(t.Category || ''))}</td><td><div>${escapeHtml(t.Remark || '')}</div><div class="small muted">Payment: ${escapeHtml(getPaymentMethod_(t))}</div>${getDisplayReferenceNumber_(t)?`<div class="small muted">Ref: ${escapeHtml(getDisplayReferenceNumber_(t))}</div>`:''}${t.Supplier?`<div class="small muted">${escapeHtml(t.Supplier)}</div>`:''}</td><td class="right">${money(t.AmountRequested)}</td><td class="right">${t.AmountFinal===''||t.AmountFinal==null?'-':money(t.AmountFinal)}</td><td>${renderStatusPill(t)}</td><td>${renderFlags(t)}</td><td>${renderSlipCell(t)}</td>${isAdmin()?`<td>${renderAdminActionCell(t)}</td>`:''}${showComplete?`<td>${renderCompleteCell(t)}</td>`:''}</tr>`;
+      }).join('')}</tbody></table></div>`;
+    }
+
+    function bindAdminButtons(){
+      document.querySelectorAll('.approve-request-btn').forEach(btn=>btn.addEventListener('click',()=>approveRequest(btn.dataset.id)));
+      document.querySelectorAll('.reject-btn').forEach(btn=>btn.addEventListener('click',()=>rejectRequest(btn.dataset.id)));
+    }
+    async function approveRequest(id){
+      setActionButtonsDisabled(id, true);
+      try{
+        try {
+          const result = await apiCall('approveRequest',{ transactionId:id });
+          if (result.transaction) updateTransactionInState(result.transaction);
+          setBanner('Request approved. Cash and EFT still need the admin paid step before user completion.','ok');
+          if (canReachServer()) {
+            try { await refreshFromBackend(false, { silent: true, skipQueueFlush: true }); } catch (refreshErr) {}
+          }
+        } catch (err) {
+          applyQueuedAdminUpdate(id, 'approved_request');
+          enqueueOperation('approveRequest', { transactionId:id }, { type: 'approve' });
+          setBanner('No signal. Approval queued for next sync.','ok');
+        }
+        renderDashboard(); renderTransactions(); renderMyEntries(); renderTopNotifications(); showScreen('transactions');
+      }catch(err){
+        setActionButtonsDisabled(id, false);
+        setBanner(err.message,'error');
+      } finally {
+        saveLocal();
+        updateSyncState();
+      }
+    }
+    async function rejectRequest(id){
+      setActionButtonsDisabled(id, true);
+      try{
+        try {
+          const result = await apiCall('rejectRequest',{ transactionId:id });
+          if (result.transaction) updateTransactionInState(result.transaction);
+          setBanner('Request rejected.','ok');
+        } catch (err) {
+          applyQueuedAdminUpdate(id, 'rejected');
+          enqueueOperation('rejectRequest', { transactionId:id }, { type: 'reject' });
+          setBanner('No signal. Rejection queued for next sync.','ok');
+        }
+        renderDashboard(); renderTransactions(); renderMyEntries(); showScreen('transactions');
+      }catch(err){
+        setActionButtonsDisabled(id, false);
+        setBanner(err.message,'error');
+      } finally {
+        saveLocal();
+        updateSyncState();
+      }
+    }
+
+    function bindSlipUploadButtons(){
+      document.querySelectorAll('.upload-slip-btn').forEach(btn=>btn.addEventListener('click',()=>pickSlipForTransaction(btn.dataset.id)));
+      document.querySelectorAll('.replace-slip-btn').forEach(btn=>btn.addEventListener('click',()=>pickSlipForTransaction(btn.dataset.id)));
+      document.querySelectorAll('.remove-slip-btn').forEach(btn=>btn.addEventListener('click',()=>removeSlipForTransaction(btn.dataset.id)));
+    }
+    function removeSlipForTransaction(id){
+      if(!normalizeAttachmentList_(state.pendingFiles[id]).length) return;
+      delete state.pendingFiles[id];
+      renderTransactions();
+      renderMyEntries();
+      showScreen(isAdmin() ? 'transactions' : 'my-entries');
+      setBanner('Attached files removed. You can attach new files.', 'ok');
+    }
+    async function pickSlipForTransaction(id){
+      try{
+        const picked = await pickAttachmentFiles_();
+        if(!picked.length) return;
+        state.pendingFiles[id] = normalizeAttachmentList_(state.pendingFiles[id]).concat(picked);
+        renderTransactions();
+        renderMyEntries();
+        showScreen(isAdmin() ? 'transactions' : 'my-entries');
+        setBanner('Slip file(s) attached. You can now complete the transaction.', 'ok');
+      } catch(err){
+        setBanner(err.message, 'error');
+      }
+    }
+
+    async function pickAttachmentFiles_(){
+      return await new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.jpg,.jpeg,.png,.pdf,.webp,image/*,application/pdf';
+        input.multiple = true;
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        input.addEventListener('change', async () => {
+          const files = Array.from(input.files || []);
+          document.body.removeChild(input);
+          if (!files.length) { resolve([]); return; }
+          try {
+            const mapped = await Promise.all(files.map(function(file){
+              return new Promise(function(resolveFile, rejectFile){
+                const reader = new FileReader();
+                reader.onload = function(){
+                  const result = String(reader.result || '');
+                  const base64 = result.includes(',') ? result.split(',')[1] : result;
+                  resolveFile({
+                    name: file.name || 'attachment',
+                    mimeType: file.type || 'application/octet-stream',
+                    base64
+                  });
+                };
+                reader.onerror = function(){ rejectFile(new Error('Could not read one of the selected files.')); };
+                reader.readAsDataURL(file);
+              });
+            }));
+            resolve(mapped);
+          } catch (err) {
+            reject(err);
+          }
+        }, { once:true });
+        input.click();
+      });
+    }
+
+    async function pickRequestAttachment(){
+      try{
+        captureRequestDraft_();
+        const picked = await pickAttachmentFiles_();
+        if(!picked.length) return;
+        state.pendingRequestFiles = normalizeAttachmentList_(state.pendingRequestFiles).concat(picked);
+        state.pendingRequestFile = state.pendingRequestFiles[0] || null;
+        renderAddRequest();
+        setBanner('Request attachment file(s) added.', 'ok');
+      } catch(err){
+        setBanner(err.message, 'error');
+      }
+    }
+
+    function removeRequestAttachment(){
+      if(!normalizeAttachmentList_(state.pendingRequestFiles || state.pendingRequestFile).length) return;
+      captureRequestDraft_();
+      state.pendingRequestFiles = [];
+      state.pendingRequestFile = null;
+      renderAddRequest();
+      setBanner('Request attachment files removed.', 'ok');
+    }
+
+    function bindPaidStepButtons(){
+      document.querySelectorAll('.mark-paid-btn').forEach(btn=>btn.addEventListener('click',()=>markTransactionPaid(btn.dataset.id)));
+      document.querySelectorAll('.upload-payment-proof-btn').forEach(btn=>btn.addEventListener('click',()=>pickPaymentProofForTransaction(btn.dataset.id)));
+      document.querySelectorAll('.remove-payment-proof-btn').forEach(btn=>btn.addEventListener('click',()=>removePaymentProofForTransaction(btn.dataset.id)));
+    }
+    function removePaymentProofForTransaction(id){
+      const key = paymentPendingKeyFor(id);
+      if(!normalizeAttachmentList_(state.pendingPaymentFiles[key]).length) return;
+      delete state.pendingPaymentFiles[key];
+      renderTransactions();
+      showScreen('transactions');
+      setBanner('Payment proof removed.', 'ok');
+    }
+    async function pickPaymentProofForTransaction(id){
+      try{
+        const picked = await pickAttachmentFiles_();
+        if(!picked.length) return;
+        const key = paymentPendingKeyFor(id);
+        state.pendingPaymentFiles[key] = normalizeAttachmentList_(state.pendingPaymentFiles[key]).concat(picked);
+        renderTransactions();
+        showScreen('transactions');
+        setBanner('Payment proof attached.', 'ok');
+      } catch(err){
+        setBanner(err.message, 'error');
+      }
+    }
+    async function markTransactionPaid(id){
+      setActionButtonsDisabled(id, true);
+      try {
+        const tx = state.transactions.find(t => t.TransactionID === id);
+        if(!tx) throw new Error('Transaction not found.');
+        const paymentMethod = getPaymentMethod_(tx);
+        if(paymentMethod === 'CARD') throw new Error('Card transactions do not need a paid step.');
+        const paidDate = todayISO();
+        validateDateAgainstSettings(paidDate);
+        const key = paymentPendingKeyFor(id);
+        const proofFiles = normalizeAttachmentList_(state.pendingPaymentFiles[key]);
+        if(paymentMethod === 'EFT' && !proofFiles.length) throw new Error('Attach proof of payment before marking EFT as paid.');
+        const payload = {
+          transactionId: id,
+          paymentMethod: paymentMethod,
+          paidDate: paidDate,
+          files: proofFiles.map(function(file){ return { fileName: file.name, fileMimeType: file.mimeType, fileDataBase64: file.base64 }; }),
+          fileName: joinAttachmentField_(proofFiles, 'name'),
+          uploadType: 'completed'
+        };
+        try {
+          const result = await apiCall('markPaid', payload);
+          delete state.pendingPaymentFiles[key];
+          if (result.transaction) updateTransactionInState(result.transaction);
+          setBanner(paymentMethod === 'EFT' ? 'EFT verified and marked paid.' : 'Cash marked paid.', 'ok');
+        } catch(err) {
+          applyQueuedMarkPaid(payload);
+          enqueueOperation('markPaid', payload, { type: 'mark_paid' });
+          setBanner('No signal. Paid step saved to queue and will upload on next sync.', 'ok');
+        }
+        renderDashboard();
+        renderTransactions();
+        renderMyEntries();
+        renderTopNotifications();
+        showScreen('transactions');
+      } catch(err) {
+        setActionButtonsDisabled(id, false);
+        setBanner(err.message,'error');
+      } finally {
+        saveLocal();
+        updateSyncState();
+      }
+    }
+    function bindCompleteButtons(){
+      document.querySelectorAll('.complete-btn').forEach(btn=>btn.addEventListener('click',()=>completeExpense(btn.dataset.id)));
+    }
+    async function completeExpense(id){
+      setActionButtonsDisabled(id, true);
+      try {
+        const tx = state.transactions.find(t => t.TransactionID === id);
+        if(!tx) throw new Error('Transaction not found.');
+
+        const pending = normalizeAttachmentList_(state.pendingFiles[id]);
+        if(!pending.length) throw new Error('Please attach at least one slip before completing the transaction.');
+
+        const finalDate = window.prompt('Enter final date used (YYYY-MM-DD):', todayISO());
+        if(finalDate === null) {
+          setActionButtonsDisabled(id, false);
+          return;
+        }
+
+        validateDateAgainstSettings(finalDate.trim());
+
+        const finalAmount = window.prompt('Enter final amount used:', tx.AmountRequested || '');
+        if(finalAmount === null) {
+          setActionButtonsDisabled(id, false);
+          return;
+        }
+        const payload = {
+          transactionId: id,
+          amountFinal: Number(finalAmount),
+          finalDate: finalDate.trim(),
+          paymentMethod: getPaymentMethod_(tx),
+          files: pending.map(function(file){ return { fileName: file.name, fileMimeType: file.mimeType, fileDataBase64: file.base64 }; }),
+          fileName: joinAttachmentField_(pending, 'name'),
+          fileMimeType: '',
+          fileDataBase64: '',
+          fileRef: '',
+          fileLink: '',
+          uploadType: 'completed'
+        };
+
+        try {
+          const result = await apiCall('completeExpense', payload);
+          delete state.pendingFiles[id];
+          if (result.transaction) updateTransactionInState(result.transaction);
+          setBanner('Transaction completed and paid.','ok');
+        } catch(err) {
+          applyQueuedCompletion(payload);
+          enqueueOperation('completeExpense', payload, { type: 'complete', pendingFileKey: id });
+          setBanner('No signal. Completion saved to queue and will upload on next sync.','ok');
+        }
+        renderDashboard();
+        renderTransactions();
+        renderMyEntries();
+        showScreen(isAdmin() ? 'transactions' : 'my-entries');
+      } catch(err) {
+        setActionButtonsDisabled(id, false);
+        setBanner(err.message,'error');
+      } finally {
+        saveLocal();
+        updateSyncState();
+      }
+    }
+
+    function updateTransactionInState(transaction){
+      const idx = state.transactions.findIndex(t => t.TransactionID === transaction.TransactionID);
+      if (idx >= 0) state.transactions[idx] = transaction;
+      else state.transactions.unshift(transaction);
+    }
+
+    async function refreshTransactionsOnly(){
+      const result = await apiCall('getTransactions', {});
+      state.transactions = result.transactions || [];
+      state.lastSyncAt = result.serverTime || nowSAIso();
+      saveLocal();
+    }
+    async function getChangesSince(){
+      const result = await apiCall('getChangesSince', { since: state.lastSyncAt || '' });
+      const changed = result.transactions || [];
+      if (changed.length) changed.forEach(updateTransactionInState);
+      state.lastSyncAt = result.serverTime || nowSAIso();
+      saveLocal();
+    }
+    async function refreshFromBackend(full, options){
+      const opts = options || {};
+      if(!state.token) return;
+      if (!canReachServer()) {
+        updateSyncState();
+        if (!opts.silent) renderApp();
+        return;
+      }
+      state.isSyncing = true;
+      updateSyncState('Syncing...', 'info');
+      try {
+        if (!opts.skipQueueFlush) await flushPendingOperations({ silent: true });
+        if (full) {
+          const data = await apiCall('bootstrap', {}, { skipOfflineGuard: true });
+          state.settings = data.settings || state.settings;
+          state.categories = data.categories || state.categories;
+          state.users = data.users || [];
+          state.transactions = data.transactions || [];
+          state.lastSyncAt = data.serverTime || nowSAIso();
+          saveLocal();
+        } else {
+          await getChangesSince();
+        }
+      } finally {
+        state.isSyncing = false;
+        updateSyncState();
+      }
+      renderApp();
+      if (!opts.skipPendingNotificationOpen) setTimeout(function(){ applyPendingNotificationOpen_({ skipRefresh: true }); }, 250);
+    }
+
+    function renderApp(){
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('appView').classList.remove('hidden');
+      const loginBtn = document.getElementById('loginBtn');
+      const banner = document.getElementById('loginBanner');
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+      }
+      if (banner) {
+        banner.className='banner info';
+        banner.textContent='Login to continue.';
+      }
+      document.getElementById('userWelcome').textContent = (state.user.fullName || state.user.FullName) + ' • ' + (state.user.role || state.user.Role);
+      renderTabs(); renderDashboard(); renderAddRequest(); renderMyEntries(); if (typeof renderLoadMoney === 'function') renderTransactions(); renderUsers(); renderMessage(); renderSettings(); showScreen('dashboard');
+      const enableBtn = document.getElementById('enableNotificationsBtn');
+      if (enableBtn) enableBtn.onclick = function(){
+        if (state.browserNotificationsEnabled && Notification.permission === 'granted' && state.fcmToken) {
+          syncNotificationButton();
+          return;
+        }
+        enableBrowserNotifications();
+      };
+      syncNotificationButton();
+      if (typeof renderTopNotifications === 'function') renderTopNotifications();
+      if (typeof bindNotificationBell === 'function') bindNotificationBell();
+      updateSyncState();
+      startAutoSync();
+      startSessionWatcher();
+      syncExistingPushSubscription().catch(()=>{});
+      setTimeout(function(){ applyPendingNotificationOpen_({ skipRefresh: true }); }, 250);
+    }
+
+    async function login(){
+      const banner = document.getElementById('loginBanner');
+      const loginBtn = document.getElementById('loginBtn');
+      try {
+        if (loginBtn) {
+          loginBtn.disabled = true;
+          loginBtn.textContent = 'Logging in...';
+        }
+        if (banner) {
+          banner.className = 'banner info';
+          banner.textContent = 'Logging in...';
+        }
+
+        state.apiUrl = HARDCODED_API_URL;
+        const loginApiInput = document.getElementById('loginApiUrl');
+        if (loginApiInput) loginApiInput.value = HARDCODED_API_URL;
+        const username = document.getElementById('loginUsername').value.trim();
+        const pin = document.getElementById('loginPin').value.trim();
+        state.savedUsername = username;
+        state.savedPin = pin;
+        saveCredentialBackup();
+
+        if(!state.apiUrl) state.apiUrl = HARDCODED_API_URL;
+
+        const response = await fetch(state.apiUrl, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action:'login', data:{ username, pin } })
+        });
+
+        const text = await response.text();
+        let json;
+        try { json = JSON.parse(text); } catch(e) { throw new Error(explainInvalidJsonResponse_(text, 'Could not login.')); }
+        if(!json.ok) throw new Error(json.message || 'Login failed');
+
+        state.token = json.token;
+        state.user = json.user;
+        state.sessionExpiresAt = new Date(Date.now() + SESSION_HOURS * 60 * 60 * 1000).toISOString();
+        state.browserNotificationsEnabled = true;
+        saveLocal();
+
+        await refreshFromBackend(true);
+        await autoEnablePushIfPossible_(true);
+
+        if (loginBtn) {
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Login';
+        }
+        if (banner) {
+          banner.className = 'banner info';
+          banner.textContent = 'Login to continue.';
+        }
+      } catch(err) {
+        if (banner) {
+          banner.className='banner error';
+          banner.textContent = err.message;
+        }
+        if (loginBtn) {
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Login';
+        }
+      }
+    }
+
+    async function logout(){
+      stopAutoSync();
+      stopSessionWatcher();
+      try { await removeExistingPushSubscriptionFromServer(); } catch (e) {}
+      state.token='';
+      state.user=null;
+      state.savedUsername='';
+      state.savedPin='';
+      clearCredentialBackup();
+      state.notificationsOpen=false;
+      state.pendingBlinkId='';
+      state.lastSyncAt='';
+      saveLocal();
+      clearLocal();
+      document.getElementById('appView').classList.add('hidden');
+      document.getElementById('loginView').classList.remove('hidden');
+      const banner = document.getElementById('loginBanner');
+      const loginBtn = document.getElementById('loginBtn');
+      if (banner) {
+        banner.className='banner info';
+        banner.textContent='Login to continue.';
+      }
+      restoreLoginInputs();
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+      }
+      updateSyncState();
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', login);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('refreshBtn').addEventListener('click', async()=>{ try{ await flushPendingOperations(); await refreshFromBackend(true, { skipQueueFlush: true }); setBanner('Data refreshed.','ok'); } catch(err){ setBanner(err.message,'error'); } });
+
+    registerServiceWorker();
+    bindInstallPrompt();
+    bindSessionResumeWatcher();
+    loadLocal();
+    const notificationTxFromUrl = getNotificationOpenParam_();
+    if (notificationTxFromUrl) storePendingNotificationOpen_(notificationTxFromUrl);
+    restoreLoginInputs();
+    document.getElementById('loginApiUrl').value = HARDCODED_API_URL;
+    if ('serviceWorker' in navigator && navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('message', async function(event){
+        const data = event && event.data ? event.data : {};
+        if (data.type === 'PETTY_CASH_NOTIFICATION_CLICK') {
+          storePendingNotificationOpen_(data.transactionId || '');
+          try { await openTransactionFromPush_(data.transactionId || '', { skipRefresh: false }); } catch (e) {}
+          return;
+        }
+        if (data.type !== 'PETTY_CASH_PUSH') return;
+        try {
+          if (state && state.token && canReachServer()) await refreshFromBackend(true, { silent: true, skipQueueFlush: true, skipPendingNotificationOpen: true });
+          else renderTopNotifications();
+        } catch (e) {
+          try { renderTopNotifications(); } catch (inner) {}
+        }
+      });
+    }
+    initFirebaseMessaging().catch(()=>{});
+    if((sessionValid() || (state.savedUsername && state.savedPin)) && state.user && state.apiUrl){
+      renderApp();
+      refreshFromBackend(true).catch(()=>{ updateSyncState(); renderApp(); });
+      resumeSessionIfNeeded_().catch(()=>{});
+    }
+    else if(state.apiUrl && state.savedUsername && state.savedPin){
+      keepSessionAlive_({ showErrors: false }).then(function(ok){
+        if(ok && state.user){
+          renderApp();
+          refreshFromBackend(true).catch(()=>{ updateSyncState(); renderApp(); });
+        } else {
+          state.token=''; state.user=null; state.sessionExpiresAt=''; state.lastSyncAt=''; saveLocal();
+        }
+      }).catch(function(){
+        state.token=''; state.user=null; state.sessionExpiresAt=''; state.lastSyncAt=''; saveLocal();
+      });
+    }
+  </script>
+</body>
+</html>
