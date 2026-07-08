@@ -1,4 +1,4 @@
-const CACHE_NAME = "petty-cash-pwa-v10.55-html-clean";
+const CACHE_NAME = "petty-cash-pwa-v10.56-local-id-merge-delete-lock";
 const APP_SHELL = [
   "./",
   "./index.html",
